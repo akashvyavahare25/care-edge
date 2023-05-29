@@ -1,0 +1,101 @@
+
+<!-- <div class="ui-g">
+    <div class="row">
+        <div class="col-sm-2">
+           
+      <div class="card">
+         <ul>
+                <li>menu</li>
+                <li>menu</li>
+                <li>menu</li>
+                <li>menu</li>
+                <li>menu</li>
+            </ul>
+              <p-slideMenu [model]="items" [viewportHeight]="250" [menuWidth]="175"></p-slideMenu> 
+         </div>
+
+        </div>
+        <div class="col-sm-10   ">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div> -->
+<!-- <footer>
+    
+        <div class="col-sm-6">
+            <p class="text1">Copyright ©  All Rights Reserved.</p>
+        </div>
+     
+</footer> -->
+<!-- <div *ngIf="isLogin">
+    <div #sidebar appSidebar>
+    </div>
+    <div class="c-wrapper">
+     
+        <header class="c-header c-header-light  c-header-shadow">
+          
+            <div class="c-header-brand">
+               <p>hello</p>
+            </div>
+        </header>
+        <div class="c-body">
+            <div class="c-subheader sticky-top justify-content-between px-3 c-header-shadow">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+        <footer class="footer">
+            <div class="row">
+                <div class="col-sm-6">
+                    <p class="text1">Copyright © {{year | date:'yyyy'}} {{cust_name}}. All Rights Reserved.</p>
+                </div>
+                <div class="col-sm-6">
+                    <p class="text2">Terms of use | Disclaimer | Privacy Policy</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div> -->
+
+
+<div class="manicontainer">
+    <!-- <div class="header"> -->
+        <header class="header">
+            <!-- <h1>this is header</h1> -->
+        </header>
+    <!-- </div> -->
+    <div class="content">
+        <div class="ui-g">
+            <div class="row">
+                <div class="col-sm-2 menu">
+                   
+              <div>
+                 <!-- <ul>
+                        <li>menu</li>
+                        <li>menu</li>
+                        <li>menu</li>
+                        <li>menu</li>
+                        <li>menu</li>
+                    </ul> -->
+                    <!-- <p-panel header="Title" [toggleable]="true" [collapsed]="true">
+                        Content
+                        </p-panel> -->
+                        <p-panelMenu [model]="items" [style]="{'height':'550px'}"></p-panelMenu>
+                     <!-- <p-slideMenu [model]="items" ></p-slideMenu> -->
+                 </div>
+        
+                </div>
+                <div class="col-sm-10   ">
+                    <router-outlet></router-outlet>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <footer  class="footer">
+    
+        <div class="col-sm-6">
+            <p class="text1">Copyright ©  All Rights Reserved.</p>
+        </div>
+     
+    </footer>
+  </div>

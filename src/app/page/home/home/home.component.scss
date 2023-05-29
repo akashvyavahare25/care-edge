@@ -1,0 +1,22 @@
+.home-page {
+     background-image: url("/assets/images/background_image.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover; 
+    background-color: #ffffff;
+    height: calc(100vh - 122px);
+    overflow: auto;
+}
+.margin-auto {
+    margin: auto;
+}
+.font-size100 {
+    font-size: 100px;
+}
+.sub-title {
+    font-size: 50px;
+    color: cadetblue;
+}
+.elt-image {
+    width: 350px;
+    height: 100px;
+}
