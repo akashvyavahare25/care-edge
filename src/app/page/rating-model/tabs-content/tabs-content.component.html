@@ -1,0 +1,22 @@
+<div class="card col-md-12 mt-3">
+    
+    <!-- <p-tabView [(activeIndex)]="activeIndex"  >
+      
+      
+        <p-tabPanel *ngFor="let tab of items" [header]="tab.data.name" [hidden]="tab.data.hide === true">
+            <p>{{ tab.data.name }} {{tab.data.hide}}</p>
+        </p-tabPanel>
+        
+    </p-tabView> -->
+
+    <p-tabView [(activeIndex)]="activeIndex">
+        <ng-template ngFor let-tab [ngForOf]="items">
+          <p-tabPanel *ngIf="tab.data.hide === true" [header]="tab.data.name">
+            <ng-template pTemplate="header">
+              {{ tab.data.name }}
+            </ng-template>
+            <p>{{ tab.data.name }}</p>
+          </p-tabPanel>
+        </ng-template>
+      </p-tabView>
+</div>

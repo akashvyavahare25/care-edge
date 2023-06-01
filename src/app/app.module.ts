@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from './shared.module';
 import { Store, StoreModule } from '@ngrx/store';
 import {  } from '@angular/compiler';
+import { tabsService } from './services/tabs.service';
 
 
 @NgModule({
@@ -27,7 +28,7 @@ import {  } from '@angular/compiler';
     SharedModule,
     StoreModule.forRoot({})
   ],
-  providers: [Store],
+  providers: [Store,tabsService],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA,CUSTOM_ELEMENTS_SCHEMA]
 })

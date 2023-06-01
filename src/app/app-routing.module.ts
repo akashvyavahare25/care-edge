@@ -6,7 +6,7 @@ import { LayoutComponent } from './page/auth/layout/layout.component';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'rating',
     data: { permission: '-' },
     pathMatch: 'full',
   },
@@ -19,6 +19,12 @@ const routes: Routes = [
         // data: { permission: '-' },
         loadChildren: () =>
           import('src/app/page/home/home.module').then(m => m.HomeModule),
+      },
+      {
+        path: 'rating',
+        // data: { permission: '-' },
+        loadChildren: () =>
+          import('src/app/page/rating-model/rating.module').then(m => m.RatingModule),
       },
      
     ]
