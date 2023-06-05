@@ -8,15 +8,23 @@
         </p-tabPanel>
         
     </p-tabView> -->
-
     <p-tabView [(activeIndex)]="activeIndex">
-        <ng-template ngFor let-tab [ngForOf]="items">
-          <p-tabPanel *ngIf="tab.data.hide === true" [header]="tab.data.name">
-            <ng-template pTemplate="header">
-              {{ tab.data.name }}
-            </ng-template>
-            <p>{{ tab.data.name }}</p>
-          </p-tabPanel>
-        </ng-template>
-      </p-tabView>
+      <ng-template ngFor let-tab [ngForOf]="items">
+        <p-tabPanel *ngIf="tab.data.hide === true" [header]="tab.data.name">
+          <ng-template pTemplate="header">
+            {{ tab.data.name }}
+          </ng-template>
+          <div class="card" style="margin: 5px;" *ngIf="tab.children && tab.children.length > 0">
+            <ul>
+              <li *ngFor="let child of tab.children">
+                <span *ngIf="child.data.hide === true">
+                {{ child.data.name }}
+                </span>
+              </li>
+            </ul>
+          </div>
+          <!-- <p>{{ tab.data.name }}</p> -->
+        </p-tabPanel>
+      </ng-template>
+    </p-tabView>
 </div>

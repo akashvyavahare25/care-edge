@@ -15,14 +15,28 @@ activeItem:any
 
   }
 ngOnInit(): void {
-  this.tabService.gettabs().subscribe(res=>{
-    this.items=res
-    console.log('tabs content ',res)
-  })
+  // this.tabService.gettabs().subscribe(res=>{
+  //   this.items=res
+  //   console.log('tabs content ',res)
+  // })
+  // const d1=localStorage.getItem("datasource")
+  // JSON.parse();
+  const jsonString: string | null = localStorage.getItem("datasource"); // Replace with your method to obtain the JSON string
+
+  if (jsonString !== null) {
+    const parsedObject = JSON.parse(jsonString, (key, value) => {
+      if (key === 'parent') {
+        // Handle circular reference
+        return value; // Return the reference to the parent object
+      }
+      return value;
+    });
+  
+    console.log(parsedObject);
+    this.items=parsedObject
+  }
   this.activeItem = this.items[0];
 }
 
-
-
-
 }
+
