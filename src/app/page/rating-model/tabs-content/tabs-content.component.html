@@ -28,8 +28,8 @@
                   </tr>
                 </thead>
                 <tbody>
-                    <tr >
-                      <td *ngFor="let row of tableRowData" >{{ row.value }}</td>
+                    <tr *ngFor="let row of child.data.rowdata">
+                      <td *ngFor="let row1 of row" >{{ row1.rowName }}</td>
                     </tr>
                 </tbody>
               </table>

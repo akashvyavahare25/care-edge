@@ -143,7 +143,7 @@
 <p-dialog
   header="Header"
   [(visible)]="containerVisible"
-  [style]="{ width: '50vw' }"
+  [style]="{ width: '52vw' }"
 >
   <ng-template pTemplate="header">
     <strong class="text-xl font-bold">Add Container</strong>
@@ -177,19 +177,37 @@
     </span>
   </div>
   <div *ngIf="containerValue === 'table'">
-    <span class="p-float-label mt-4">
-      <input type="text" pInputText [(ngModel)]="tableName" />
-      <label htmlFor="username">Title</label>
-    </span>
-    <span class="p-float-label mt-4">
-      <input
-        type="number"
-        pInputText
-        [(ngModel)]="Noofcolumns"
-        (ngModelChange)="onChangecolumn($event)"
-      />
-      <label htmlFor="username">No of columns</label>
-    </span>
+    <div class="row">
+      <div class="col-md-3 ">
+        <span class="p-float-label mt-4">
+          <input type="text" pInputText [(ngModel)]="tableName" />
+          <label htmlFor="username">Title</label>
+        </span>
+      </div>
+      <div class="col-md-3" style="margin-left: 55px;">
+        <span class="p-float-label mt-4">
+          <input
+            type="number"
+            pInputText
+            [(ngModel)]="Noofcolumns"
+            (ngModelChange)="onChangecolumn($event)"
+          />
+          <label htmlFor="username">No of columns</label>
+        </span>
+        </div>
+        <div class="col-md-3" style="margin-left: 55px;">
+          <span class="p-float-label mt-4">
+            <input
+              type="number"
+              pInputText
+              [(ngModel)]="Noofrows"
+              (ngModelChange)="onChangerow($event)"
+            />
+            <label htmlFor="username">No of rows</label>
+          </span>
+          </div>
+    </div>
+
     <span>
       <label [style]="{ margin: '10px' }"> Select Columns to merged</label>
       <div class="column-class">
@@ -204,13 +222,21 @@
                 /> -->
                 <div>
                   <form [formGroup]="item" role="form">
-                  <label>
-                    <input type="checkbox" formControlName="mergecheckbox" *ngIf="IsMerge" />
+                    <input [type]="Columntype" formControlName="mergecheckbox" *ngIf="IsMerge" />
                     <input type="text" formControlName="columnName" />
-                  </label>
+                  
                 </form>
                 </div>
               </th>
+            </tr>
+            <tr *ngFor="let item of tableFormforrow.controls let indexOfelement=index">
+              <td *ngFor="let ritem of item.controls let index=index" >
+                <div>
+                  <form [formGroup]="ritem" role="form">
+                    <input type="text" formControlName="rowName" />
+                </form>
+                </div>
+              </td>
             </tr>
           </thead>
         </table>
