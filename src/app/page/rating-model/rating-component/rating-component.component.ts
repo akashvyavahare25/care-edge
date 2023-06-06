@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { tabsService } from 'src/app/services/tabs.service';
 
@@ -44,15 +45,18 @@ export class RatingComponentComponent implements OnInit {
   containerVisible: boolean = false;
   IsContainer:boolean=true
   IsTable:boolean=false
+  tableForm:any
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private tabService: tabsService
+    private tabService: tabsService,
+    private fb:FormBuilder,
   ) {}
   ngOnInit(): void {
     this.tabService.gettabs().subscribe(res=>{
       this.files=res
     })
+    this.tableForm = this.fb.array(([]))
   }
 
   showDialog() {
@@ -329,7 +333,31 @@ saveContainer(){
 }
   }
   else{
+    const filteredData = this.tableForm.value.filter((item:any) => item.mergecheckbox === true);
+    const mergecheckboxCount = filteredData.length;
     
+    const mergedNames = filteredData.map((item:any) => item.columnName).join(" ");
+    const updatedData = [
+      {
+        mergecheckbox: '',
+        mergecheckboxCount:mergecheckboxCount,
+        columnName: mergedNames
+      },
+      ...this.tableForm.value.slice(mergecheckboxCount)
+    ];
+
+    this.containerData.children.push({
+      "data": {
+          "name": this.tableName,
+          "type": "table",
+          "hide" :true,
+          "tabledata":updatedData
+      }
+    })
+    console.log('data form ',updatedData)
+    this.tableName=''
+  this.containerData={}
+  this.containerVisible=false
   }
 }
   showcontaineronclick(){
@@ -357,13 +385,20 @@ saveContainer(){
   onChangecolumn(event:any){
     this.dynamicColumns=[]
     for (let i = 1; i <= this.Noofcolumns; i++) {
-      this.dynamicColumns.push(i);
+      // this.dynamicColumns.push(i);
+      const rangeArray = this.tableForm as FormArray
+      const formGroup = new FormGroup({});
+      formGroup.addControl('mergecheckbox', new FormControl(''));
+      formGroup.addControl('columnName', new FormControl(''));
+      rangeArray.push(formGroup);
     }
+   
   }
   mergecolumn(){
     this.IsMerge=true
   }
 }
+
 function jsonReplacer(key: string, value: any): any {
   if (typeof value === 'object' && value !== null) {
     if (key === 'parent') {

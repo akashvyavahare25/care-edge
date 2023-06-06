@@ -10,11 +10,13 @@ export class TabsContentComponent implements OnInit {
   activeIndex: number = 0;
   items:any = [];
 activeItem:any
+tableRowData:any=[{value:'akash'},{value:'aniket '},{value:'kiran'},{value:'shubham'}]
 
   constructor(private tabService:tabsService){
 
   }
 ngOnInit(): void {
+  
   // this.tabService.gettabs().subscribe(res=>{
   //   this.items=res
   //   console.log('tabs content ',res)
@@ -37,6 +39,7 @@ ngOnInit(): void {
   }
   this.activeItem = this.items[0];
 }
+
 
 }
 

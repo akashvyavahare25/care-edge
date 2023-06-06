@@ -10,6 +10,7 @@
     </div>
   </div>
   <div class="card card-container col-md-12 mt-2">
+    
     <p-treeTable
       [value]="files"
       [scrollable]="true"
@@ -195,17 +196,19 @@
         <table>
           <thead>
             <tr>
-              <th *ngFor="let column of dynamicColumns">
+              <th *ngFor="let item of tableForm.controls let indexOfelement=index">
                 <!-- <input
                   type="text"
                   pInputText
                   [style]="{ 'margin-left': '10px' }"
                 /> -->
                 <div>
+                  <form [formGroup]="item" role="form">
                   <label>
-                    <input type="checkbox" *ngIf="IsMerge" />
-                    <input type="text" />
+                    <input type="checkbox" formControlName="mergecheckbox" *ngIf="IsMerge" />
+                    <input type="text" formControlName="columnName" />
                   </label>
+                </form>
                 </div>
               </th>
             </tr>

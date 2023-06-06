@@ -15,16 +15,29 @@
             {{ tab.data.name }}
           </ng-template>
           <div class="card" style="margin: 5px;" *ngIf="tab.children && tab.children.length > 0">
-            <ul>
-              <li *ngFor="let child of tab.children">
+            <div  *ngFor="let child of tab.children">
+              <ul *ngIf="child.data.type === 'container'">
                 <span *ngIf="child.data.hide === true">
-                {{ child.data.name }}
+               <li>{{ child.data.name }}</li>
                 </span>
-              </li>
-            </ul>
+              </ul>
+              <table *ngIf="child.data.type === 'table'">
+                <thead>
+                  <tr>
+                    <th *ngFor="let column of child.data.tabledata " [attr.colspan]="column.mergecheckboxCount">{{ column.columnName }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr >
+                      <td *ngFor="let row of tableRowData" >{{ row.value }}</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          
           </div>
           <!-- <p>{{ tab.data.name }}</p> -->
         </p-tabPanel>
       </ng-template>
-    </p-tabView>
+</p-tabView>
 </div>
