@@ -1,3 +1,8 @@
+<span>
+  <label class="hover-text" (click)="Navigate()">
+    <p>&larr;Rating Model</p>
+  </label>
+</span>
 <div class="card col-md-12 mt-3">
     
     <!-- <p-tabView [(activeIndex)]="activeIndex"  >
@@ -8,6 +13,7 @@
         </p-tabPanel>
         
     </p-tabView> -->
+   
     <p-tabView [(activeIndex)]="activeIndex">
       <ng-template ngFor let-tab [ngForOf]="items">
         <p-tabPanel *ngIf="tab.data.hide === true" [header]="tab.data.name">
@@ -21,16 +27,22 @@
                <li>{{ child.data.name }}</li>
                 </span>
               </ul>
-              <table *ngIf="child.data.type === 'table'">
+              <table *ngIf="child.data.type === 'table' && child.data.hide === true">
                 <thead>
-                  <tr>
-                    <th *ngFor="let column of child.data.tabledata " [attr.colspan]="column.mergecheckboxCount">{{ column.columnName }}</th>
+                  <tr class="rowdata" [style]="{'background-color':'#FAFAFA'}">
+                    <th *ngFor="let column of child.data.tabledata " [attr.colspan]="column.mergecheckboxCount" [style]="{width:'33%'}">{{ column.columnName }}</th>
                   </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let row of child.data.rowdata">
-                      <td *ngFor="let row1 of row" >{{ row1.rowName }}</td>
+                   <!-- <span *ngFor="let row2 of child.data.rowdata "> -->
+                    <!-- {{row1.cellstyledata.rowNameValue}} -->
+                    <tr class="rowdata" *ngFor="let row2 of child.data.rowdata">
+                      <td class="datarow"  *ngFor="let row1 of row2" [ngStyle]="{width:'33%','background-color':row1.cellstyledata.BackGroundcolour,'color':row1.cellstyledata.Fontcolour}" >
+                        <label htmlFor="username">{{row1.cellstyledata.rowNameValue}}</label>
+                        <input *ngIf="row1.cellstyledata.inputtype!=='label'"  [type]="row1.cellstyledata.inputtype" [ngStyle]="{'margin-left':'10px','height':'30px'}" /> 
+                      </td>
                     </tr>
+                  <!-- </span> -->
                 </tbody>
               </table>
             </div>

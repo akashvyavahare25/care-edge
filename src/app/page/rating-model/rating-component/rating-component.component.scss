@@ -11,5 +11,29 @@
     margin-bottom: 5px;
     
 }
+.messages-container {
+    position: fixed;  /* Set the position to fixed */
+    top: 20px;       /* Adjust the top position as per your requirement */
+    right: 20px;     /* Adjust the right position as per your requirement */
+    z-index: 9999;   /* Ensure a high z-index to make it appear above other elements */
+  }
+  .p-divider {
+    border: none;
+    border-top: 1px solid black;
+    margin: 10px 0;
+  }
+ 
+  
+  
+  
+  
+ 
+  
+  
+  
+  
+  
+  
+  
 
 

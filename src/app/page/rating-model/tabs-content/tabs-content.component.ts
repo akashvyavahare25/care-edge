@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { tabsService } from 'src/app/services/tabs.service';
 
 @Component({
@@ -12,7 +13,8 @@ export class TabsContentComponent implements OnInit {
 activeItem:any
 tableRowData:any=[{value:'akash'},{value:'aniket '},{value:'kiran'},{value:'shubham'}]
 
-  constructor(private tabService:tabsService){
+  constructor(private tabService:tabsService,
+    private router: Router,){
 
   }
 ngOnInit(): void {
@@ -38,6 +40,9 @@ ngOnInit(): void {
     this.items=parsedObject
   }
   this.activeItem = this.items[0];
+}
+Navigate(){
+  this.router.navigate(['/rating'])
 }
 
 

@@ -11,6 +11,7 @@ import { SharedModule } from './shared.module';
 import { Store, StoreModule } from '@ngrx/store';
 import {  } from '@angular/compiler';
 import { tabsService } from './services/tabs.service';
+import { MessageService } from 'primeng/api';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { tabsService } from './services/tabs.service';
     SharedModule,
     StoreModule.forRoot({})
   ],
-  providers: [Store,tabsService],
+
+  providers: [Store,tabsService,MessageService],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA,CUSTOM_ELEMENTS_SCHEMA]
 })
