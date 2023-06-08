@@ -64,6 +64,7 @@ export class RatingComponentComponent implements OnInit {
   innervar: any;
   CellStyleVisible: boolean = false;
   tableName: any;
+  tablerowNode:any=[]
   addcontainerdata: any = [];
   containerData: any = [];
   containerTitle: any;
@@ -196,6 +197,7 @@ export class RatingComponentComponent implements OnInit {
       this.Noofcolumns=rowData.tabledata.length;
       this.Noofrows=rowData.rowdata.length;
       this.containerData = rowNode.node;
+      this.tablerowNode= rowNode.node;
       this.tableForm = this.fb.array([]);
       for (let i = 0; i <this.Noofcolumns; i++) {
         // this.dynamicColumns.push(i);
@@ -204,6 +206,21 @@ export class RatingComponentComponent implements OnInit {
         //formGroup.addControl('mergecheckbox', new FormControl(rowData.tabledata[i].mergecheckbox));
         formGroup.addControl('columnName', new FormControl(rowData.tabledata[i].columnName));
         rangeArray.push(formGroup);
+      }
+      this.rangeArrayforRow = [];
+      this.tableFormforrow = this.fb.array([]);
+      this.rangeArrayforRow = this.tableFormforrow as FormArray;
+  
+      for (let i = 0; i < this.Noofrows; i++) {
+        this.FormArray1 = this.fb.array([]);
+        for (let j = 0; j < this.Noofcolumns; j++) {
+          const formGroup = new FormGroup({
+            rowName: new FormControl(rowData.rowdata[i][j].rowName),
+          });
+          //formGroup.addControl('rowName', new FormControl(''));
+          this.FormArray1.push(formGroup);
+        }
+        this.rangeArrayforRow.push(this.FormArray1);
       }
 
       
@@ -237,6 +254,7 @@ export class RatingComponentComponent implements OnInit {
             size: rowData.size,
             type: 'container',
             hide: rowData.hide,
+            id:rownode.node.parent.children.length+1
           },
         };
 
@@ -249,7 +267,8 @@ export class RatingComponentComponent implements OnInit {
             type: 'table',
             hide: rowData.hide,
             rowdata:rowData.rowdata,
-            tabledata:rowData.tabledata
+            tabledata:rowData.tabledata,
+            id:rownode.node.parent.children.length+1
           },
         };
         rownode.node.parent.children.push(data);
@@ -266,8 +285,11 @@ export class RatingComponentComponent implements OnInit {
         this.tabService.SubmitTabs(jsonString1).subscribe((res) => {});
       });
     } else {
-      rowNode.node.parent.children = rowNode.node.parent.children.filter(
-        (tab: any) => tab.data.name !== rowData.name
+      // rowNode.node.parent.children = rowNode.node.parent.children.filter(
+      //   (tab: any) => tab.data.name !== rowData.name
+      // );
+       rowNode.node.parent.children = rowNode.node.parent.children.filter(
+        (tab: any) => tab.data.id !== rowData.id
       );
       const jsonString: string | null = localStorage.getItem('datasource'); // Replace with your method to obtain the JSON string
       if (jsonString !== null) {
@@ -407,7 +429,9 @@ export class RatingComponentComponent implements OnInit {
     this.Noofcolumns=null
     this.tableName=null
     this.Noofrows=null
+    this.tablerowNode=rownode.node
     this.onChangecolumn(this.Noofcolumns)
+    this.onChangerow(this.Noofrows)
     this.containerData = rownode.node;
     this.containerValue='container'
     this.containerTitle = 'Add Container';
@@ -444,6 +468,7 @@ export class RatingComponentComponent implements OnInit {
             size: '10mb',
             type: 'container',
             hide: true,
+            id:this.containerData.children.length+1
           },
         });
         console.log('containerdata', this.containerData);
@@ -452,7 +477,59 @@ export class RatingComponentComponent implements OnInit {
         this.containerData = {};
         this.containerVisible = false;
       }
-    } else {
+    } 
+    else {
+      if (this.containerTitle == 'Edit table'){
+        const filteredData = this.tableForm.value.filter(
+          (item: any) => item.mergecheckbox === true
+        );
+        const rowsdata = this.tableFormforrow.value;
+        for(let i=0;i<rowsdata.length;i++){
+          for(let j=0;j<rowsdata[i].length;j++){
+            if (!rowsdata[i][j].hasOwnProperty('cellstyledata')) {
+              rowsdata[i][j]['cellstyledata'] =
+              this.tablerowNode.data.rowdata[i][j].cellstyledata
+            }
+          }
+        }
+        const mergecheckboxCount = filteredData.length;
+  
+        let updatedData;
+        if (filteredData.length > 0) {
+          const mergedNames = filteredData
+            .map((item: any) => item.columnName)
+            .join(' ');
+          updatedData = [
+            {
+              mergecheckbox: '',
+              mergecheckboxCount: mergecheckboxCount,
+              columnName: mergedNames,
+            },
+            ...this.tableForm.value.slice(mergecheckboxCount),
+          ];
+        } else {
+          updatedData = this.tableForm.value;
+        }
+        this.containerData.data.tabledata=updatedData
+        this.containerData.data.rowdata=rowsdata
+        // this.containerData.children.push({
+        //   data: {
+        //     name: this.tableName,
+        //     type: 'table',
+        //     hide: true,
+        //     tabledata: updatedData,
+        //     rowdata: rowsdata,
+        //     id:this.containerData.children.length+1
+        //   },
+        // });
+  
+        console.log('rowdata', rowsdata);
+        console.log('data form ', updatedData);
+        this.tableName = '';
+        this.containerData = {};
+        this.containerVisible = false;
+      
+      }else{
       const filteredData = this.tableForm.value.filter(
         (item: any) => item.mergecheckbox === true
       );
@@ -483,6 +560,7 @@ export class RatingComponentComponent implements OnInit {
           hide: true,
           tabledata: updatedData,
           rowdata: rowsdata,
+          id:this.containerData.children.length+1
         },
       });
 
@@ -492,6 +570,7 @@ export class RatingComponentComponent implements OnInit {
       this.containerData = {};
       this.containerVisible = false;
     }
+  }
   }
   showcontaineronclick() {
     this.selectedOption = 'option';
@@ -565,7 +644,12 @@ export class RatingComponentComponent implements OnInit {
     this.IsFonttext = true;
     this.Iscolor = false;
     this.Istext = true;
-    console.log('cellform', this.tableFormforrow.value);
+    this.CellformGroup.get('rowNameValue').setValue(this.tablerowNode.data.rowdata[i][j].cellstyledata.rowNameValue);
+    this.CellformGroup.get('inputtype').setValue(this.tablerowNode.data.rowdata[i][j].cellstyledata.inputtype);
+    this.CellformGroup.get('BackGroundcolour').setValue(this.tablerowNode.data.rowdata[i][j].cellstyledata.BackGroundcolour);
+    this.CellformGroup.get('Fontcolour').setValue(this.tablerowNode.data.rowdata[i][j].cellstyledata.Fontcolour);
+
+   console.log("row[i][j]", this.tablerowNode.data.rowdata[i][j])
   }
   mergecolumn() {
     this.IsMerge = true;
