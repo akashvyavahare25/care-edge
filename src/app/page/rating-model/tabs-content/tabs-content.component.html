@@ -36,12 +36,40 @@
                 <tbody>
                    <!-- <span *ngFor="let row2 of child.data.rowdata "> -->
                     <!-- {{row1.cellstyledata.rowNameValue}} -->
-                    <tr class="rowdata" *ngFor="let row2 of child.data.rowdata">
-                      <td class="datarow"  *ngFor="let row1 of row2" [ngStyle]="{width:'33%','background-color':row1.cellstyledata.BackGroundcolour,'color':row1.cellstyledata.Fontcolour}" >
+                   
+                   
+                    <tr class="rowdata" *ngFor="let row2 of child.data.rowdata let i=index">
+                      <td class="datarow"  *ngFor="let row1 of row2 let j=index" [ngStyle]="{width:'33%','background-color':row1.cellstyledata.BackGroundcolour,'color':row1.cellstyledata.Fontcolour}" >
                         <label htmlFor="username">{{row1.cellstyledata.rowNameValue}}</label>
-                        <input *ngIf="row1.cellstyledata.inputtype!=='label'"  [type]="row1.cellstyledata.inputtype" [ngStyle]="{'margin-left':'10px','height':'30px'}" /> 
+                        <input *ngIf="row1.cellstyledata.inputtype!=='label'" (change)="onchangevalue($event, i,j)" [type]="row1.cellstyledata.inputtype" [ngStyle]="{'margin-left':'10px','height':'30px'}" /> 
                       </td>
                     </tr>
+                    
+                      <tr class="rowdata" *ngIf="child.data.totalValue===true">
+                        <td class="datarow" [attr.colspan]="child.data.tabledata.length-1">
+                          <label>Total</label>
+                        </td>
+                        <td class="datarow" colspan="1" >
+                          <input type="text"  [value]="total" [ngStyle]="{'margin-left':'10px','height':'30px'}" readonly />
+                        </td>
+                      </tr>
+                      <tr class="rowdata" *ngIf="child.data.scoreValue===true">
+                        <td class="datarow" [attr.colspan]="child.data.tabledata.length-1">
+                          <label>Score</label>
+                        </td>
+                        <td class="datarow" colspan="1" >
+                          <input type="text" [value]="score" [ngStyle]="{'margin-left':'10px','height':'30px'}" readonly />
+                        </td>
+                      </tr>
+                      <tr class="rowdata" *ngIf="child.data.factorValue===true">
+                        <td class="datarow" [attr.colspan]="child.data.tabledata.length-1">
+                          <label>Factor</label>
+                        </td>
+                        <td class="datarow" colspan="1" >
+                          <input type="text" [value]="factor" [ngStyle]="{'margin-left':'10px','height':'30px'}" readonly/>
+                        </td>
+                      </tr>
+                  
                   <!-- </span> -->
                 </tbody>
               </table>

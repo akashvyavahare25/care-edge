@@ -196,6 +196,9 @@ export class RatingComponentComponent implements OnInit {
       this.containerVisible = true;
       this.Noofcolumns=rowData.tabledata.length;
       this.Noofrows=rowData.rowdata.length;
+      this.scoreValue=rowData.scoreValue,
+      this.factorValue=rowData.factorValue,
+      this.totalValue=rowData.totalValue,
       this.containerData = rowNode.node;
       this.tablerowNode= rowNode.node;
       this.tableForm = this.fb.array([]);
@@ -429,6 +432,9 @@ export class RatingComponentComponent implements OnInit {
     this.Noofcolumns=null
     this.tableName=null
     this.Noofrows=null
+    this.scoreValue=null
+    this.factorValue=null
+    this.totalValue=null
     this.tablerowNode=rownode.node
     this.onChangecolumn(this.Noofcolumns)
     this.onChangerow(this.Noofrows)
@@ -512,6 +518,9 @@ export class RatingComponentComponent implements OnInit {
         }
         this.containerData.data.tabledata=updatedData
         this.containerData.data.rowdata=rowsdata
+        this.containerData.data.scoreValue=this.scoreValue,
+        this.containerData.data.factorValue=this.factorValue,
+        this.containerData.data.totalValue=this.totalValue,
         // this.containerData.children.push({
         //   data: {
         //     name: this.tableName,
@@ -560,6 +569,9 @@ export class RatingComponentComponent implements OnInit {
           hide: true,
           tabledata: updatedData,
           rowdata: rowsdata,
+          scoreValue:this.scoreValue,
+          factorValue:this.factorValue,
+          totalValue:this.totalValue,
           id:this.containerData.children.length+1
         },
       });
