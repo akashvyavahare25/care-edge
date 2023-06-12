@@ -13,7 +13,6 @@
     </div>
   </div>
   <div class="card card-container col-md-12 mt-2">
-    
     <p-treeTable
       [value]="files"
       [scrollable]="true"
@@ -78,7 +77,6 @@
       label="Submit"
       [style]="{ 'margin-left': '.8em' }"
     ></p-button>
-  
   </div>
 </div>
 
@@ -86,7 +84,7 @@
   <ng-template pTemplate="header">
     <strong class="text-xl font-bold">{{ tabTitle }}</strong>
   </ng-template>
-  <hr class="p-divider">
+  <hr class="p-divider" />
   <div style="margin: 5px; margin-top: 20px">
     <span class="p-float-label">
       <input type="text" pInputText [(ngModel)]="tabName" />
@@ -94,7 +92,7 @@
     </span>
   </div>
   <ng-template pTemplate="footer">
-    <hr class="p-divider">
+    <hr class="p-divider" />
     <p-button
       (click)="saveTabs()"
       label="save"
@@ -111,7 +109,7 @@
   <ng-template pTemplate="header">
     <strong class="text-xl font-bold">Dependent Component</strong>
   </ng-template>
-  <hr class="p-divider">
+  <hr class="p-divider" />
   <div class="col-md-12">
     <div class="row" style="margin-top: 20px">
       <div class="col-md-6">
@@ -139,7 +137,7 @@
     </div>
   </div>
   <ng-template pTemplate="footer">
-    <hr class="p-divider">
+    <hr class="p-divider" />
     <p-button
       (click)="saveComponents()"
       label="save"
@@ -151,14 +149,14 @@
 <p-dialog
   header="Header"
   [(visible)]="containerVisible"
-  [style]="{ width: '52vw'}"
+  [style]="{ width: '52vw' }"
 >
   <ng-template pTemplate="header">
     <strong class="text-xl font-bold">Add Container</strong>
     <!-- <label><input type="radio" [(ngModel)]="selectedOption" value="container" (click)="showcontaineronclick()" > Add Container </label>
     <label><input type="radio" [(ngModel)]="selectedOption" value="table" (click)="showTableonclick()" > Table</label> -->
   </ng-template>
-  <hr class="p-divider">
+  <hr class="p-divider" />
   <div style="margin: 5px">
     <div class="radio-button-container">
       <div class="radio-button-item">
@@ -237,7 +235,7 @@
                 <div>
                   <form [formGroup]="item" role="form">
                     <input
-                      [type]="Columntype"
+                      type="checkbox"
                       formControlName="mergecheckbox"
                       *ngIf="IsMerge"
                       [style]="{
@@ -246,22 +244,25 @@
                         'margin-top': '4px'
                       }"
                     />
-                    <input type="text" pInputText formControlName="columnName" />
+                    <input
+                      type="text"
+                      pInputText
+                      formControlName="columnName"
+                    />
                   </form>
                 </div>
               </th>
             </tr>
-            <tr
-              *ngFor="
-                let item of tableFormforrow.controls;
-                let i = index
-              "
-            >
+            <tr *ngFor="let item of tableFormforrow.controls; let i = index">
               <td *ngFor="let ritem of item.controls; let index = index">
                 <div>
                   <form [formGroup]="ritem" role="form">
-                    <input type="text" pInputText formControlName="rowName" (click)="EditCell(i,index)" />
-                    
+                    <input
+                      type="text"
+                      pInputText
+                      formControlName="rowName"
+                      (click)="EditCell(i, index)"
+                    />
                   </form>
                 </div>
               </td>
@@ -284,45 +285,51 @@
     </span>
     <span>
       <div class="radio-button-container">
-        <div class="radio-button-item" [style]="{'margin-top':'20px'}">
+        <div class="radio-button-item" [style]="{ 'margin-top': '20px' }">
           <div class="row">
             <div class="col-md-2">
-          <input
-            type="checkbox"
-            name="pizza"
-            value="Score"
-            [(ngModel)]="scoreValue"
-            inputId="ingredient1"
-            [style]="{ 'margin-left': '10px' }"
-          /><label htmlFor="username" style="margin-left: 10px">Score</label>
-</div>
-<div class="col-md-2">
-          <input
-            type="checkbox"
-            name="pizza"
-            value="Factor"
-            [(ngModel)]="factorValue"
-            inputId="ingredient2"
-            [style]="{ 'margin-left': '10px' }"
-          /><label htmlFor="username" style="margin-left: 10px">Factor</label>
-</div>
-<div class="col-md-2">
-          <input
-            type="checkbox"
-            name="pizza"
-            value="Total"
-            [(ngModel)]="totalValue"
-            inputId="ingredient3"
-            [style]="{ 'margin-left': '10px' }"
-          /><label htmlFor="username" style="margin-left: 10px">Total</label>
-        </div>
-        </div>
+              <input
+                type="checkbox"
+                name="pizza"
+                value="Score"
+                [(ngModel)]="scoreValue"
+                inputId="ingredient1"
+                [style]="{ 'margin-left': '10px' }"
+              /><label htmlFor="username" style="margin-left: 10px"
+                >Score</label
+              >
+            </div>
+            <div class="col-md-2">
+              <input
+                type="checkbox"
+                name="pizza"
+                value="Factor"
+                [(ngModel)]="factorValue"
+                inputId="ingredient2"
+                [style]="{ 'margin-left': '10px' }"
+              /><label htmlFor="username" style="margin-left: 10px"
+                >Factor</label
+              >
+            </div>
+            <div class="col-md-2">
+              <input
+                type="checkbox"
+                name="pizza"
+                value="Total"
+                [(ngModel)]="totalValue"
+                inputId="ingredient3"
+                [style]="{ 'margin-left': '10px' }"
+              /><label htmlFor="username" style="margin-left: 10px"
+                >Total</label
+              >
+            </div>
+          </div>
         </div>
       </div>
     </span>
   </div>
   <ng-template pTemplate="footer">
-    <hr class="p-divider">
+    <hr class="p-divider" />
     <p-button
       (click)="saveContainer()"
       label="save"
@@ -332,47 +339,123 @@
   </ng-template>
 </p-dialog>
 
-
-
 <p-dialog
   header="Header"
   [(visible)]="CellStyleVisible"
-  [style]="{ width: '55vw','height':'400px'}"
+  [style]="{ width: '55vw', height: '400px' }"
 >
   <ng-template pTemplate="header">
     <strong class="text-xl font-bold">Add Cell Property</strong>
-    </ng-template>
-    <hr class="p-divider">
+  </ng-template>
+  <hr class="p-divider" />
   <form [formGroup]="CellformGroup">
     <div class="col-md-12">
-    <div class="row">
-      <div class="col-md-4" >
-        <label htmlFor="username">Input Type</label><br>
-        <select formControlName="inputtype" [style]="{'width':'200px','height':'40px','border-color': 'lightgray'}" (change)="selectedoption($event)">
-          <option *ngFor="let option of options" [value]="option">{{ option }}</option>
-        </select>
+      <div class="row">
+        <div class="col-md-4">
+          <label htmlFor="username">Input Type</label><br />
+          <select
+            formControlName="inputtype"
+            [style]="{
+              width: '200px',
+              height: '40px',
+              'border-color': 'lightgray'
+            }"
+            (change)="selectedoption($event)"
+          >
+            <option *ngFor="let option of options" [value]="option">
+              {{ option }}
+            </option>
+          </select>
+        </div>
+
+        <div  class="col-md-3">
+          <label *ngIf="IsLabel" htmlFor="username">Label</label>
+          <input *ngIf="IsLabel" pInputText formControlName="rowNameValue"/> 
+        </div>
+        <div class="col-md-3" [style]="{'margin-left':'50px'}">
+          <label htmlFor="username">Background color</label>
+          <input
+            *ngIf="Istext"
+            type="text"
+            pInputText
+            [value]="selectedColor"
+            (click)="changebackgroundcolor()"
+            formControlName="BackGroundcolour"
+          />
+
+          <input
+            *ngIf="Iscolor"
+            type="color"
+            (input)="updateColor($event)"
+           
+            formControlName="BackGroundcolour"
+            [style]="{ width: '90px' }"
+            #colorPicker
+          />
+        </div>
+        <div class="col-md-3" >
+          <label htmlFor="username">Font Color</label><br />
+          <input
+            *ngIf="IsFonttext"
+            type="text"
+            pInputText
+            [value]="selectedFontColor"
+            (click)="changeFontcolor()"
+            formControlName="Fontcolour"
+          />
+          <input
+            *ngIf="IsFontcolor"
+            type="color"
+            value="#000000"
+            (input)="updateFontColor($event)"
+            formControlName="Fontcolour"
+            [style]="{ width: '90px' }"
+            #colorPicker
+          />
+        </div>
+        <div class="col-md-3" *ngIf="IsCheckbox" style="margin-top: 22px;margin-left: 60px;">
+          <p-button
+          (click)="addcheckboxvalid()"
+          label="Add"
+          styleClass="p-button-te
+          xt"
+        ></p-button>
+        </div>
       </div>
-      <div class="col-md-3" >
-        <label htmlFor="username">Label</label>
-    <input type="text" pInputText formControlName="rowNameValue"/> 
-</div>
-<div class="col-md-3" style="margin-left: 40px">
-    <label htmlFor="username">Background color</label>  
-    <input *ngIf="Istext"  type="text" pInputText [value]="selectedColor" (click)="changebackgroundcolor()" formControlName="BackGroundcolour" />
-    <input *ngIf="Iscolor" type="color" (input)="updateColor($event)" formControlName="BackGroundcolour" [style]="{'width':'90px'}" #colorPicker/>
-   </div>
-      <div class="col-md-3" [style]="{'margin-top':'10px'}" >
-    <label htmlFor="username">Font Color</label><br>
-    <input *ngIf="IsFonttext" type="text" pInputText [value]="selectedFontColor" (click)="changeFontcolor()" formControlName="Fontcolour" />
-    <input *ngIf="IsFontcolor" type="color" (input)="updateFontColor($event)" formControlName="Fontcolour" [style]="{'width':'90px'}" #colorPicker/>
- 
-  </div>
-  </div>
-</div>
+    </div>
+    <div *ngIf="IsCheckboxadd">
+      <div class="col-md-12" formArrayName="checkboxvalid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="col-md-3" style="margin-left:20px;">
+            <label htmlFor="username">Label</label>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="row"
+        *ngFor="let quantity of checkboxvalid().controls; let i = index"
+        [formGroupName]="i"
+      >
+            <div class="col-md-3" style="margin-top: 5px">
+              <input type="text" pInputText formControlName="Label" />
+            </div>
+          <div class="col-md-2">
+            <div class="deleteIcon" (click)="removecheckboxvalid_(i)">
+              <i
+              class="pi pi-trash"
+              
+            ></i>
+            </div>
+          </div>  
+      </div>
+    </div>
+    </div>
   </form>
 
   <ng-template pTemplate="footer">
-    <hr class="p-divider">
+    <hr class="p-divider" />
     <p-button
       (click)="saveCellStyle()"
       label="save"
@@ -381,5 +464,3 @@
     ></p-button>
   </ng-template>
 </p-dialog>
-
-

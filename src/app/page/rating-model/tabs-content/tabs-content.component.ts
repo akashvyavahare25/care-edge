@@ -13,7 +13,7 @@ export class TabsContentComponent implements OnInit {
   listofitems:any=[]
   Changedvalue: any;
   activeItem: any;
-
+  options:any=[]
   score: number=0;
   factor: number=0;
   total: number=0;
@@ -49,34 +49,23 @@ export class TabsContentComponent implements OnInit {
     this.activeItem = this.items[0];
   }
 
-  onchangevalue(event: any, i: any, j: any) {
-    let k=0
-this.total=0
-    console.log('event', event, i, j);
-    for (let tab of this.items) {
-      for (let child of tab.children) {
-        if (child.data.type === "table") {
-
-          if(child.data.rowdata[i][j].cellstyledata.hasOwnProperty('value')){
-            child.data.rowdata[i][j].cellstyledata.value=event.target.value
-          }else{
-              child.data.rowdata[i][j].cellstyledata['value']=event.target.value
-          }
-              for(let row of child.data.rowdata){
-              for(let k=0;k<row.length;k++){
-              if(row[k].cellstyledata.hasOwnProperty('value')){
-                this.total += +row[k].cellstyledata.value
-              }
-            }
-          }
-        
-            }
-      }
-      this.listofitems.push(tab)  
-    }
-   
-    
+onchangevalue(event: any, rowIndex: any, columnIndex:any ,rowdata:any,rowValue:any) {
+  
+  this.total=0
+ rowValue.cellstyledata['value']=parseInt(event.target.value)
+ if((rowValue.cellstyledata.hasOwnProperty('value')) && rowValue.cellstyledata.inputtype==="number"){
+         rowdata.forEach((item:any )=> {
+           item.forEach((ele:any,i:any)=>{
+             if(ele.cellstyledata.hasOwnProperty('value') && ele.cellstyledata.inputtype==="number" && i=== columnIndex)
+             if (!isNaN(ele.cellstyledata.value)){
+             this.total=this.total + ele.cellstyledata.value
+             }
+             
+           })
+           
+         });
   }
+}
   Navigate() {
     this.router.navigate(['/rating']);
   }

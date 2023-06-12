@@ -21,16 +21,24 @@
             {{ tab.data.name }}
           </ng-template>
           <div class="card" style="margin: 5px;" *ngIf="tab.children && tab.children.length > 0">
-            <div  *ngFor="let child of tab.children">
-              <ul *ngIf="child.data.type === 'container'">
-                <span *ngIf="child.data.hide === true">
-               <li>{{ child.data.name }}</li>
+            <div  *ngFor="let child of tab.children" [ngStyle]="{'margin-top':'20px'}">
+            
+              <ul *ngIf="child.data.type === 'container'" >
+                <span *ngIf="child.data.hide === true" >
+               <li [ngStyle]="{'border':'solid','border-width':'0.2px'}">{{ child.data.name }}</li>
                 </span>
               </ul>
+            
               <table *ngIf="child.data.type === 'table' && child.data.hide === true">
                 <thead>
+                  <th [style]="{width:'33%','background-color':'lightgray'}" [attr.colspan]="child.data.tabledata.length">
+                    {{ child.data.name }}
+                  </th>
+                  <!-- <tr class="rowdata" *ngIf="child.data.mergecol !== null" [style]="{'background-color':'#FAFAFA'}">
+                    <th *ngFor="let column of child.data.mergecol " [attr.colspan]="column.mergecheckboxCount" [style]="{width:'33%'}">{{ column.columnName }}</th>
+                  </tr> -->
                   <tr class="rowdata" [style]="{'background-color':'#FAFAFA'}">
-                    <th *ngFor="let column of child.data.tabledata " [attr.colspan]="column.mergecheckboxCount" [style]="{width:'33%'}">{{ column.columnName }}</th>
+                    <th *ngFor="let column of child.data.tabledata "  [attr.colspan]="column.mergecheckboxCount" [style]="{width:'33%'}">{{ column.columnName }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -41,7 +49,17 @@
                     <tr class="rowdata" *ngFor="let row2 of child.data.rowdata let i=index">
                       <td class="datarow"  *ngFor="let row1 of row2 let j=index" [ngStyle]="{width:'33%','background-color':row1.cellstyledata.BackGroundcolour,'color':row1.cellstyledata.Fontcolour}" >
                         <label htmlFor="username">{{row1.cellstyledata.rowNameValue}}</label>
-                        <input *ngIf="row1.cellstyledata.inputtype!=='label'" (change)="onchangevalue($event, i,j)" [type]="row1.cellstyledata.inputtype" [ngStyle]="{'margin-left':'10px','height':'30px'}" /> 
+                        <input *ngIf="row1.cellstyledata.inputtype!=='label' && row1.cellstyledata.inputtype!=='dropdown' && row1.cellstyledata.inputtype!=='checkbox' && row1.cellstyledata.inputtype!=='radio'  " (change)="onchangevalue($event, i,j,child.data.rowdata,row1)" [type]="row1.cellstyledata.inputtype" [ngStyle]="{'margin-left':'10px','height':'30px'}" /> 
+                        <select *ngIf="row1.cellstyledata.inputtype==='dropdown'" [style]="{'width':'180px','height':'30px','border-color': 'lightgray','margin-left':'10px'}" >
+                          <option *ngFor="let option of row1.cellstyledata.checkboxvalid" [value]="option.Label">{{option.Label}}</option>
+                        </select>
+                        
+                        <ng-container *ngIf="row1.cellstyledata.inputtype === 'checkbox' || row1.cellstyledata.inputtype === 'radio' ">
+                          <div  *ngFor="let option of row1.cellstyledata.checkboxvalid">
+                            <label>{{ option.Label }}</label>
+                            <input [type]="row1.cellstyledata.inputtype " />
+                          </div>
+                        </ng-container>
                       </td>
                     </tr>
                     
