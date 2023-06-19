@@ -1,20 +1,31 @@
 .card{
     margin: 5px;
     height: 98%;
+   
 }
-table, th, td {
-    border: 1px solid black;
+table {
+    border: 1px solid lightgray;
     width: 100%;
     height: auto;
+
+ }
+ th, td {
+    border: 1px solid lightgray;
+   min-width: 200px;
+    height: auto;
+
  }
  .hover-text:hover {
     color: blue;
   }
   .rowdata{
     height:50px;
+ border-color: lightgray;
   }
   .datarow{
     margin-left: 20px;
+  
+    border-color:lightgray ;
   }
   ul {
     list-style: none;

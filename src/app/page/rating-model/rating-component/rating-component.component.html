@@ -149,7 +149,7 @@
 <p-dialog
   header="Header"
   [(visible)]="containerVisible"
-  [style]="{ width: '52vw' }"
+  [style]="{ width: '80vw', height: '1200px' }"
 >
   <ng-template pTemplate="header">
     <strong class="text-xl font-bold">Add Container</strong>
@@ -227,17 +227,12 @@
                   let indexOfelement = index
                 "
               >
-                <!-- <input
-                  type="text"
-                  pInputText
-                  [style]="{ 'margin-left': '10px' }"
-                /> -->
                 <div>
-                  <form [formGroup]="item" role="form">
-                    <input
+                  <form [formGroup]="item" role="form" class="formstyle">
+                    <!-- <input
                       type="checkbox"
                       formControlName="mergecheckbox"
-                      *ngIf="IsMerge"
+                     
                       [style]="{
                         position: 'absolute',
                         'margin-left': '170px',
@@ -248,6 +243,19 @@
                       type="text"
                       pInputText
                       formControlName="columnName"
+                    /> -->
+
+                    <input
+                      pInputText
+                      type="text"
+                      class="input-field"
+                      formControlName="columnName"
+                    />
+                    <input
+                      *ngIf="IsMerge"
+                      type="checkbox"
+                      class="checkbox"
+                      formControlName="mergecheckbox"
                     />
                   </form>
                 </div>
@@ -263,26 +271,110 @@
                       formControlName="rowName"
                       (click)="EditCell(i, index)"
                     />
+                    <input
+                      *ngIf="IsMerge"
+                      type="checkbox"
+                      class="checkbox"
+                      formControlName="mergecheckbox"
+                    />
                   </form>
                 </div>
+              </td>
+           
+              <td>
+          <div>
+                <p-button
+                  (click)="clickforrowstyle(i)"
+                  label="Row Style"
+                  styleClass="p-button-text"
+                ></p-button>
+                <span class="delete" (click)="removeRow(i)">
+                  <i class="pi pi-trash" [ngStyle]="{'margin-left':'10px','padding-bottom':'10px'}"></i>
+                </span>
+                <!-- <span class="Add" (click)="AddRow(i)">
+                  <i class="pi pi-plus-circle" [ngStyle]="{'margin-left':'10px','padding-bottom':'10px'}"></i>
+                </span> -->
+              </div>
               </td>
             </tr>
           </thead>
         </table>
       </div>
     </span>
-    <span style="margin-top: 10px">
-      <p-button
-        (click)="mergecolumn()"
-        label="Merge Columns"
-        styleClass="p-button-text"
-        [style]="{
-          'margin-top': '10px',
-          'background-color': '#0d89ec',
-          color: 'white'
-        }"
-      ></p-button>
-    </span>
+    <div class="row">
+      <div class="col-md-2">
+        <p-button
+          (click)="AddRow()"
+          label="Add Row"
+          styleClass="p-button-text"
+          [style]="{
+            'margin-top': '10px',
+            'background-color': '#0d89ec',
+            color: 'white',
+            width: '150px'
+          }"
+        ></p-button>
+      </div>
+      <div class="col-md-2">
+        <p-button
+          (click)="mergecolumn()"
+          label="Merge Columns"
+          styleClass="p-button-text"
+          [style]="{
+            'margin-top': '10px',
+            'background-color': '#0d89ec',
+            color: 'white',
+            width: '150px'
+          }"
+        ></p-button>
+      </div>
+      <div class="col-md-1" style="margin-top: 10px">
+        <label *ngIf="IsMerge" htmlFor="username">Merge Title</label>
+      </div>
+
+      <!-- <div class="row" *ngFor="let item of newmergecolumnlist">
+        {{ item.columnName }}
+        <div
+          class="col-md-2"
+          *ngFor="let column of item.columnindex; let i = index"
+        >
+          {{ column }}
+        </div>
+      </div> -->
+
+      <div class="col-md-3" style="margin-top: 10px">
+        <input
+          *ngIf="IsMerge"
+          type="text"
+          pInputText
+          label="Merge Columns Name"
+          [(ngModel)]="Mergecolumnname"
+        />
+      </div>
+    </div>
+    <div class="row" *ngIf="IsMergePresent">
+      <table>
+        <thead>
+          <th [style]="{ 'text-align': 'center' }" [attr.colspan]="1">
+            Merged Column Name
+          </th>
+          <th
+            [style]="{ 'text-align': 'center' }"
+            [attr.colspan]="newmergecolumnlist[0].columnindex.length"
+          >
+            Column Name
+          </th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of newmergecolumnlist">
+            <td class="tdstyle">{{ item.columnName }}</td>
+            <td *ngFor="let column of item.columnindex; let i = index" class="tdstyle">
+             {{column}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <span>
       <div class="radio-button-container">
         <div class="radio-button-item" [style]="{ 'margin-top': '20px' }">
@@ -368,11 +460,11 @@
           </select>
         </div>
 
-        <div  class="col-md-3">
+        <div class="col-md-3">
           <label *ngIf="IsLabel" htmlFor="username">Label</label>
-          <input *ngIf="IsLabel" pInputText formControlName="rowNameValue"/> 
+          <input *ngIf="IsLabel" pInputText formControlName="rowNameValue" />
         </div>
-        <div class="col-md-3" [style]="{'margin-left':'50px'}">
+        <div class="col-md-3" [style]="{ 'margin-left': '50px' }">
           <label htmlFor="username">Background color</label>
           <input
             *ngIf="Istext"
@@ -387,13 +479,12 @@
             *ngIf="Iscolor"
             type="color"
             (input)="updateColor($event)"
-           
             formControlName="BackGroundcolour"
             [style]="{ width: '90px' }"
             #colorPicker
           />
         </div>
-        <div class="col-md-3" >
+        <div class="col-md-3">
           <label htmlFor="username">Font Color</label><br />
           <input
             *ngIf="IsFonttext"
@@ -406,51 +497,51 @@
           <input
             *ngIf="IsFontcolor"
             type="color"
-            value="#000000"
             (input)="updateFontColor($event)"
             formControlName="Fontcolour"
             [style]="{ width: '90px' }"
             #colorPicker
           />
         </div>
-        <div class="col-md-3" *ngIf="IsCheckbox" style="margin-top: 22px;margin-left: 60px;">
+        <div
+          class="col-md-3"
+          *ngIf="IsCheckbox"
+          style="margin-top: 22px; margin-left: 60px"
+        >
           <p-button
-          (click)="addcheckboxvalid()"
-          label="Add"
-          styleClass="p-button-te
+            (click)="addcheckboxvalid()"
+            label="Add"
+            styleClass="p-button-te
           xt"
-        ></p-button>
+          ></p-button>
         </div>
       </div>
     </div>
     <div *ngIf="IsCheckboxadd">
       <div class="col-md-12" formArrayName="checkboxvalid">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="col-md-3" style="margin-left:20px;">
-            <label htmlFor="username">Label</label>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="col-md-3" style="margin-left: 20px">
+              <label htmlFor="username">Label</label>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="row"
+          *ngFor="let quantity of checkboxvalid().controls; let i = index"
+          [formGroupName]="i"
+        >
+          <div class="col-md-3" style="margin-top: 5px">
+            <input type="text" pInputText formControlName="Label" />
+          </div>
+          <div class="col-md-2">
+            <div class="deleteIcon" (click)="removecheckboxvalid_(i)">
+              <i class="pi pi-trash"></i>
+            </div>
           </div>
         </div>
       </div>
-
-      <div
-        class="row"
-        *ngFor="let quantity of checkboxvalid().controls; let i = index"
-        [formGroupName]="i"
-      >
-            <div class="col-md-3" style="margin-top: 5px">
-              <input type="text" pInputText formControlName="Label" />
-            </div>
-          <div class="col-md-2">
-            <div class="deleteIcon" (click)="removecheckboxvalid_(i)">
-              <i
-              class="pi pi-trash"
-              
-            ></i>
-            </div>
-          </div>  
-      </div>
-    </div>
     </div>
   </form>
 
@@ -458,6 +549,123 @@
     <hr class="p-divider" />
     <p-button
       (click)="saveCellStyle()"
+      label="save"
+      styleClass="p-button-te
+      xt"
+    ></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  header="Header"
+  [(visible)]="RowStyleVisible"
+  [style]="{ width: '55vw', height: '400px' }"
+>
+  <ng-template pTemplate="header">
+    <strong class="text-xl font-bold">Add Row Property</strong>
+  </ng-template>
+  <hr class="p-divider" />
+  <form [formGroup]="RowformGroup">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-3">
+          <label htmlFor="username">Font Size</label>
+          <p-inputNumber inputId="integeronly" formControlName="Fontsize">
+          </p-inputNumber>
+          <!-- <input  type="number" formControlName="Fontsize"/> -->
+        </div>
+        <div class="col-md-4" style="margin-left: 50px">
+          <label htmlFor="username">Text Case</label><br />
+          <select
+            formControlName="textTransform"
+            [style]="{
+              width: '200px',
+              height: '40px',
+              'border-color': 'lightgray'
+            }"
+          >
+            <option *ngFor="let option of textcaseoption" [value]="option">
+              {{ option }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label htmlFor="username">Font Weight</label><br />
+          <select
+            formControlName="Fontweight"
+            [style]="{
+              width: '200px',
+              height: '40px',
+              'border-color': 'lightgray'
+            }"
+          >
+            <option *ngFor="let option of Fontweightoption" [value]="option">
+              {{ option }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label htmlFor="username">Font Style</label><br />
+          <select
+            formControlName="Fontstyle"
+            [style]="{
+              width: '200px',
+              height: '40px',
+              'border-color': 'lightgray'
+            }"
+          >
+            <option *ngFor="let option of Fontstyleoption" [value]="option">
+              {{ option }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-3" [style]="{ 'margin-left': '108px' }">
+          <label htmlFor="username">Background color</label>
+          <input
+            *ngIf="IsRowtext"
+            type="text"
+            pInputText
+            [value]="RowselectedColor"
+            (click)="changeRowbackgroundcolor()"
+            formControlName="RowBackGroundcolour"
+          />
+
+          <input
+            *ngIf="IsRowcolor"
+            type="color"
+            (input)="updateRowColor($event)"
+            formControlName="RowBackGroundcolour"
+            [style]="{ width: '90px' }"
+            #colorPicker
+          />
+        </div>
+        <div class="col-md-3" [style]="{ 'margin-left': '60px' }">
+          <label htmlFor="username">Font Color</label><br />
+          <input
+            *ngIf="IsRowFonttext"
+            type="text"
+            pInputText
+            [value]="selectedRowFontColor"
+            (click)="changeRowFontcolor()"
+            formControlName="RowFontcolour"
+          />
+          <input
+            *ngIf="IsRowFontcolor"
+            type="color"
+            (input)="updateRowFontColor($event)"
+            formControlName="RowFontcolour"
+            [style]="{ width: '90px' }"
+            #colorPicker
+          />
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <hr class="p-divider" />
+    <p-button
+      (click)="saveRowStyle()"
       label="save"
       styleClass="p-button-te
       xt"

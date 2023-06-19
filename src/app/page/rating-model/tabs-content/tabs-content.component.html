@@ -3,9 +3,8 @@
     <p>&larr;Rating Model</p>
   </label>
 </span>
-<div class="card col-md-12 mt-3">
-    
-    <!-- <p-tabView [(activeIndex)]="activeIndex"  >
+<div class="card col-md-12 mt-3" >
+  <!-- <p-tabView [(activeIndex)]="activeIndex"  >
       
       
         <p-tabPanel *ngFor="let tab of items" [header]="tab.data.name" [hidden]="tab.data.hide === true">
@@ -13,89 +12,221 @@
         </p-tabPanel>
         
     </p-tabView> -->
-   
-    <p-tabView [(activeIndex)]="activeIndex">
-      <ng-template ngFor let-tab [ngForOf]="items">
-        <p-tabPanel *ngIf="tab.data.hide === true" [header]="tab.data.name">
-          <ng-template pTemplate="header">
-            {{ tab.data.name }}
-          </ng-template>
-          <div class="card" style="margin: 5px;" *ngIf="tab.children && tab.children.length > 0">
-            <div  *ngFor="let child of tab.children" [ngStyle]="{'margin-top':'20px'}">
-            
-              <ul *ngIf="child.data.type === 'container'" >
-                <span *ngIf="child.data.hide === true" >
-               <li [ngStyle]="{'border':'solid','border-width':'0.2px'}">{{ child.data.name }}</li>
-                </span>
-              </ul>
-            
-              <table *ngIf="child.data.type === 'table' && child.data.hide === true">
-                <thead>
-                  <th [style]="{width:'33%','background-color':'lightgray'}" [attr.colspan]="child.data.tabledata.length">
-                    {{ child.data.name }}
+
+  <p-tabView [(activeIndex)]="activeIndex">
+    <ng-template ngFor let-tab [ngForOf]="items">
+      <p-tabPanel *ngIf="tab.data.hide === true" [header]="tab.data.name">
+        <ng-template pTemplate="header">
+          {{ tab.data.name }}
+        </ng-template>
+        <div
+          class="card"
+          [style]="{margin: '5px', height: '650px','overflow-y': 'auto'}"
+          *ngIf="tab.children && tab.children.length > 0"
+        >
+          <div
+            *ngFor="let child of tab.children"
+            [ngStyle]="{ 'margin-top': '20px' }"
+          >
+            <ul *ngIf="child.data.type === 'container'">
+              <span *ngIf="child.data.hide === true">
+                <li [ngStyle]="{ border: 'solid', 'border-width': '0.2px' }">
+                  {{ child.data.name }}
+                </li>
+              </span>
+            </ul>
+
+            <table id="myTable" style="border-color:lightgray" 
+              *ngIf="child.data.type === 'table' && child.data.hide === true"
+            >
+              <thead>
+                <th
+                  [style]="{ 'text-align':'center' }"
+                  [attr.colspan]="child.data.tabledata.length"
+                >
+                  {{ child.data.name }}
+                </th>
+                <!-- <tr *ngFor="let mergedColumn of child.data.mergecol">
+                    <th [attr.colspan]="mergedColumn.mergecheckboxCount">
+                      {{ mergedColumn.columnName }}
+                    </th>
+                </tr> -->
+                <tr
+                  class="rowdata"
+                  *ngIf="child.data.mergecol.length !== 0"
+                 
+                >
+                  <th
+                    *ngFor="let column of child.data.mergecol"
+                    [attr.colspan]="column.mergecheckboxCount"
+                  [ngStyle]="{'text-align':'center'}"
+                  >
+                    {{ column.columnName }}
                   </th>
-                  <!-- <tr class="rowdata" *ngIf="child.data.mergecol !== null" [style]="{'background-color':'#FAFAFA'}">
-                    <th *ngFor="let column of child.data.mergecol " [attr.colspan]="column.mergecheckboxCount" [style]="{width:'33%'}">{{ column.columnName }}</th>
-                  </tr> -->
-                  <tr class="rowdata" [style]="{'background-color':'#FAFAFA'}">
-                    <th *ngFor="let column of child.data.tabledata "  [attr.colspan]="column.mergecheckboxCount" [style]="{width:'33%'}">{{ column.columnName }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                   <!-- <span *ngFor="let row2 of child.data.rowdata "> -->
-                    <!-- {{row1.cellstyledata.rowNameValue}} -->
-                   
-                   
-                    <tr class="rowdata" *ngFor="let row2 of child.data.rowdata let i=index">
-                      <td class="datarow"  *ngFor="let row1 of row2 let j=index" [ngStyle]="{width:'33%','background-color':row1.cellstyledata.BackGroundcolour,'color':row1.cellstyledata.Fontcolour}" >
-                        <label htmlFor="username">{{row1.cellstyledata.rowNameValue}}</label>
-                        <input *ngIf="row1.cellstyledata.inputtype!=='label' && row1.cellstyledata.inputtype!=='dropdown' && row1.cellstyledata.inputtype!=='checkbox' && row1.cellstyledata.inputtype!=='radio'  " (change)="onchangevalue($event, i,j,child.data.rowdata,row1)" [type]="row1.cellstyledata.inputtype" [ngStyle]="{'margin-left':'10px','height':'30px'}" /> 
-                        <select *ngIf="row1.cellstyledata.inputtype==='dropdown'" [style]="{'width':'180px','height':'30px','border-color': 'lightgray','margin-left':'10px'}" >
-                          <option *ngFor="let option of row1.cellstyledata.checkboxvalid" [value]="option.Label">{{option.Label}}</option>
-                        </select>
-                        
-                        <ng-container *ngIf="row1.cellstyledata.inputtype === 'checkbox' || row1.cellstyledata.inputtype === 'radio' ">
-                          <div  *ngFor="let option of row1.cellstyledata.checkboxvalid">
-                            <label>{{ option.Label }}</label>
-                            <input [type]="row1.cellstyledata.inputtype " />
-                          </div>
-                        </ng-container>
-                      </td>
-                    </tr>
+                </tr>
+                <tr class="rowdata">
+                  <th
+                    *ngFor="let column of child.data.tabledata"
+                    [style]="{ 'width': '100% /column.length','text-align':'center' }"
+                  >
+                    {{ column.columnName }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- <span *ngFor="let row2 of child.data.rowdata "> -->
+                <!-- {{row1.cellstyledata.rowNameValue}} -->
+                <!-- "isBold ? {'font-weight': 'bold'} : {'font-weight': 'normal'}" -->
+                <tr
+                  class="rowdata"
+                  *ngFor="let row2 of child.data.rowdata; let i = index"
+                  [ngStyle]="{'background-color':row2[0].rowstyledata.RowBackGroundcolour?row2[0].rowstyledata.RowBackGroundcolour:'#ffffff',
+                  'color':row2[0].rowstyledata.RowFontcolour?row2[0].rowstyledata.RowFontcolour:'#000000' }"        
+                  >
+                  <td
+                    class="datarow"
+                    *ngFor="let row1 of row2; let j = index"
+                    [ngStyle]="{
                     
-                      <tr class="rowdata" *ngIf="child.data.totalValue===true">
-                        <td class="datarow" [attr.colspan]="child.data.tabledata.length-1">
-                          <label>Total</label>
-                        </td>
-                        <td class="datarow" colspan="1" >
-                          <input type="text"  [value]="total" [ngStyle]="{'margin-left':'10px','height':'30px'}" readonly />
-                        </td>
-                      </tr>
-                      <tr class="rowdata" *ngIf="child.data.scoreValue===true">
-                        <td class="datarow" [attr.colspan]="child.data.tabledata.length-1">
-                          <label>Score</label>
-                        </td>
-                        <td class="datarow" colspan="1" >
-                          <input type="text" [value]="score" [ngStyle]="{'margin-left':'10px','height':'30px'}" readonly />
-                        </td>
-                      </tr>
-                      <tr class="rowdata" *ngIf="child.data.factorValue===true">
-                        <td class="datarow" [attr.colspan]="child.data.tabledata.length-1">
-                          <label>Factor</label>
-                        </td>
-                        <td class="datarow" colspan="1" >
-                          <input type="text" [value]="factor" [ngStyle]="{'margin-left':'10px','height':'30px'}" readonly/>
-                        </td>
-                      </tr>
+                      'font-size': row1.rowstyledata.Fontsize,
+                      'font-weight': row1.rowstyledata.Fontweight,
+                      'font-style': row1.rowstyledata.Fontstyle,
+                      'text-transform': row1.rowstyledata.textTransform,
+                      'background-color': row1.cellstyledata.BackGroundcolour,
+                      color: row1.cellstyledata.Fontcolour
+                    }"
+               
+                  >
+        
                   
-                  <!-- </span> -->
-                </tbody>
-              </table>
-            </div>
-          
+                    <label htmlFor="username" [style]="{'margin-left':'25px'}">{{
+                      row1.cellstyledata.rowNameValue
+                    }}</label>
+                    <input
+                      *ngIf="
+                      row1.cellstyledata.inputtype !== null &&
+                      row1.cellstyledata.inputtype !== '' &&
+                        row1.cellstyledata.inputtype !== 'label' &&
+                        row1.cellstyledata.inputtype !== 'dropdown' &&
+                        row1.cellstyledata.inputtype !== 'checkbox' &&
+                        row1.cellstyledata.inputtype !== 'radio'
+                      "
+                      (change)="
+                        onchangevalue(
+                          $event,
+                          i,
+                          j,
+                          child.data.rowdata,
+                          row1,
+                          child.data.tabledata
+                        )
+                      "
+                      [type]="row1.cellstyledata.inputtype"
+                      [ngStyle]="{ 'margin-left': '20px','width':'80%','margin-right': '10px' ,'border-color':'lightgray' }"
+                    />
+                    <div  *ngIf="row1.cellstyledata.inputtype === null || row1.cellstyledata.inputtype === '' " >
+
+                    </div>
+                    <select
+                      *ngIf="row1.cellstyledata.inputtype === 'dropdown'"
+                      [style]="{
+                        'border-color':'lightgray',
+                        width: '210px',
+                        height: '35px',
+                        'margin-left': '20px'
+                      }"
+                    >
+                      <option
+                        *ngFor="let option of row1.cellstyledata.checkboxvalid"
+                        [value]="option.Label"
+                      >
+                        {{ option.Label }}
+                      </option>
+                    </select>
+
+                    <ng-container
+                      *ngIf="
+                        row1.cellstyledata.inputtype === 'checkbox' ||
+                        row1.cellstyledata.inputtype === 'radio'
+                      "
+                    >
+                      <div
+                        *ngFor="let option of row1.cellstyledata.checkboxvalid"
+                      >
+                        <label>{{ option.Label }}</label>
+                        <input type="radio" *ngIf="row1.cellstyledata.inputtype==='radio'" />
+
+                        <input type="checkbox" *ngIf="row1.cellstyledata.inputtype==='checkbox'" />
+                      </div>
+                    </ng-container>
+                  </td>
+                </tr>
+
+                <tr class="rowdata" *ngIf="child.data.totalValue === true">
+                  <td
+                    class="datarow" 
+                    *ngFor="let col of child.data.tabledata; let i = index"
+                  >
+                  <div *ngIf="i===0; else elseBlock">
+                    <label>Total</label>
+               </div>
+                  <ng-template #elseBlock>
+                    <input 
+                      type="text"
+                      *ngIf="col?.columntotal"
+                      [value]="col.columntotal"
+                      [ngStyle]="{ 'margin-left': '10px', 'height': '30px', 'width':'90%' }"
+                      readonly
+                    />
+                  </ng-template>
+                  </td>
+                </tr>
+                <tr class="rowdata" *ngIf="child.data.scoreValue === true">
+                  <td
+                  class="datarow" 
+                  *ngFor="let col of child.data.tabledata; let i = index"
+                >
+                <div *ngIf="i===0; else elseBlock">
+                  <label>Score</label>
+             </div>
+                <ng-template #elseBlock>
+                  <input 
+                    type="text"
+                    *ngIf="col?.score"
+                    [value]="col.score"
+                    [ngStyle]="{ 'margin-left': '10px', 'height': '30px', 'width':'90%' }"
+                    readonly
+                  />
+                </ng-template>
+                </td>
+                </tr>
+                <tr class="rowdata" *ngIf="child.data.factorValue === true">
+                  <td
+                  class="datarow" 
+                  *ngFor="let col of child.data.tabledata; let i = index"
+                >
+                <div *ngIf="i===0; else elseBlock">
+                  <label>Factor</label>
+             </div>
+                <ng-template #elseBlock>
+                  <input 
+                    type="text"
+                    *ngIf="col?.factor"
+                    [value]="col.factor"
+                    [ngStyle]="{ 'margin-left': '10px', 'height': '30px', 'width':'90%' }"
+                    readonly
+                  />
+                </ng-template>
+                </td>
+                </tr>
+
+                <!-- </span> -->
+              </tbody>
+            </table>
           </div>
-          <!-- <p>{{ tab.data.name }}</p> -->
-        </p-tabPanel>
-      </ng-template>
-</p-tabView>
+        </div>
+        <!-- <p>{{ tab.data.name }}</p> -->
+      </p-tabPanel>
+    </ng-template>
+  </p-tabView>
 </div>
