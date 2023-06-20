@@ -226,6 +226,9 @@
                   let item of tableForm.controls;
                   let indexOfelement = index
                 "
+                (mouseenter)="onCellMouseEntercolumn($event, indexOfelement)"
+                [pTooltip]="tooltipTextcolumn.join(', ')"
+                tooltipPosition="top"
               >
                 <div>
                   <form [formGroup]="item" role="form" class="formstyle">
@@ -262,7 +265,13 @@
               </th>
             </tr>
             <tr *ngFor="let item of tableFormforrow.controls; let i = index">
-              <td *ngFor="let ritem of item.controls; let index = index">
+              <td
+                *ngFor="let ritem of item.controls; let index = index"
+                (mouseenter)="onCellMouseEnter($event, i, index)"
+                [pTooltip]="tooltipText.join(', ')"
+                tooltipPosition="top"
+                
+              >
                 <div>
                   <form [formGroup]="ritem" role="form">
                     <input
@@ -272,29 +281,43 @@
                       (click)="EditCell(i, index)"
                     />
                     <input
+                      [id]="'DynamicId-' + i + index"
                       *ngIf="IsMerge"
                       type="checkbox"
                       class="checkbox"
                       formControlName="mergecheckbox"
+                     
                     />
                   </form>
                 </div>
               </td>
-           
+
               <td>
-          <div>
-                <p-button
-                  (click)="clickforrowstyle(i)"
-                  label="Row Style"
-                  styleClass="p-button-text"
-                ></p-button>
-                <span class="delete" (click)="removeRow(i)">
-                  <i class="pi pi-trash" [ngStyle]="{'margin-left':'10px','padding-bottom':'10px'}"></i>
-                </span>
-                <!-- <span class="Add" (click)="AddRow(i)">
-                  <i class="pi pi-plus-circle" [ngStyle]="{'margin-left':'10px','padding-bottom':'10px'}"></i>
-                </span> -->
-              </div>
+                <div>
+                  <p-button
+                    (click)="clickforrowstyle(i)"
+                    label="Row Style"
+                    styleClass="p-button-text"
+                  ></p-button>
+                  <span class="delete" (click)="removeRow(i)">
+                    <i
+                      class="pi pi-trash"
+                      [ngStyle]="{
+                        'margin-left': '10px',
+                        'padding-bottom': '10px'
+                      }"
+                    ></i>
+                  </span>
+                  <span class="Add" (click)="AddRow(i)">
+                    <i
+                      class="pi pi-plus-circle"
+                      [ngStyle]="{
+                        'margin-left': '10px',
+                        'padding-bottom': '10px'
+                      }"
+                    ></i>
+                  </span>
+                </div>
               </td>
             </tr>
           </thead>
@@ -302,7 +325,7 @@
       </div>
     </span>
     <div class="row">
-      <div class="col-md-2">
+      <!-- <div class="col-md-2">
         <p-button
           (click)="AddRow()"
           label="Add Row"
@@ -314,7 +337,8 @@
             width: '150px'
           }"
         ></p-button>
-      </div>
+      </div> -->
+
       <div class="col-md-2">
         <p-button
           (click)="mergecolumn()"
@@ -352,29 +376,7 @@
         />
       </div>
     </div>
-    <div class="row" *ngIf="IsMergePresent">
-      <table>
-        <thead>
-          <th [style]="{ 'text-align': 'center' }" [attr.colspan]="1">
-            Merged Column Name
-          </th>
-          <th
-            [style]="{ 'text-align': 'center' }"
-            [attr.colspan]="newmergecolumnlist[0].columnindex.length"
-          >
-            Column Name
-          </th>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of newmergecolumnlist">
-            <td class="tdstyle">{{ item.columnName }}</td>
-            <td *ngFor="let column of item.columnindex; let i = index" class="tdstyle">
-             {{column}}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+
     <span>
       <div class="radio-button-container">
         <div class="radio-button-item" [style]="{ 'margin-top': '20px' }">

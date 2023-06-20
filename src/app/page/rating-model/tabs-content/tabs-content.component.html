@@ -78,12 +78,12 @@
                 <!-- {{row1.cellstyledata.rowNameValue}} -->
                 <!-- "isBold ? {'font-weight': 'bold'} : {'font-weight': 'normal'}" -->
                 <tr
-                  class="rowdata"
-                  *ngFor="let row2 of child.data.rowdata; let i = index"
-                  [ngStyle]="{'background-color':row2[0].rowstyledata.RowBackGroundcolour?row2[0].rowstyledata.RowBackGroundcolour:'#ffffff',
-                  'color':row2[0].rowstyledata.RowFontcolour?row2[0].rowstyledata.RowFontcolour:'#000000' }"        
-                  >
-                  <td
+                class="rowdata"
+                *ngFor="let row2 of child.data.rowdata; let i = index"
+                [ngStyle]="{'background-color':row2[0].rowstyledata.RowBackGroundcolour?row2[0].rowstyledata.RowBackGroundcolour:'#ffffff',
+                'color':row2[0].rowstyledata.RowFontcolour?row2[0].rowstyledata.RowFontcolour:'#000000' }"        
+                [attr.id]="'tr' + (i + 1)" #tableRow>
+                  <td [id]="'myDynamicId-' + i +j" 
                     class="datarow"
                     *ngFor="let row1 of row2; let j = index"
                     [ngStyle]="{
