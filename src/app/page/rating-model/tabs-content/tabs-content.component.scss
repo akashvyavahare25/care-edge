@@ -23,10 +23,10 @@ table {
  border-color: lightgray;
   }
   .datarow{
-    margin-left: 20px;
-  
-    border-color:lightgray ;
-  }
+    // margin-left: 20px;
+    display: table-cell;
+    text-align: center;
+    border-color:lightgray;}
   ul {
     list-style: none;
   }

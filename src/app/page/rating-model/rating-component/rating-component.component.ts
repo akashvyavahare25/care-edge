@@ -293,7 +293,7 @@ export class RatingComponentComponent implements OnInit {
 
   onCellMouseEnter(event: MouseEvent, i: number, j: number): void {
     this.tooltipText = []; 
-    
+    if( this.tablerowNode.data.hasOwnProperty('mergecolumnrow')){
     this.tablerowNode.data.mergecolumnrow.forEach((element: any) => {
       element.arrayofindex.forEach((ele: any) => {
         if (ele.row === i && ele.column === j) {
@@ -306,11 +306,25 @@ export class RatingComponentComponent implements OnInit {
         }
       });
     });
+  }else if(this.updaterowcolspandata.length!==0){
+    this.updaterowcolspandata.forEach((element: any) => {
+      element.arrayofindex.forEach((ele: any) => {
+        if (ele.row === i && ele.column === j) {
+         
+          element.arrayofindex.forEach((e1:any) => {   
+            this.tooltipText.push('Row:'+e1.row + ' ' +'Column:'+ e1.column); 
+          });
+          this.tooltipText.push(' is already merged:')
+         
+        }
+      });
+    });
+  }
   }
 
   onCellMouseEntercolumn(event: MouseEvent, i: number){
     this.tooltipTextcolumn=[]
-    
+    if( this.tablerowNode.data.hasOwnProperty('mergecol')){
     this.tablerowNode.data.mergecol.forEach((element:any)=> {
       element.columnindex.forEach((ele:any) => {
         if(ele===i){
@@ -324,6 +338,21 @@ export class RatingComponentComponent implements OnInit {
         
       });
           });
+        }else if(this.updatedDatanew.length!==0){
+          this.updatedDatanew.forEach((element:any)=> {
+            element.columnindex.forEach((ele:any) => {
+              if(ele===i){
+                element.columnindex.forEach((e1:any) => { 
+                
+                  this.tooltipTextcolumn.push('Column:' +e1); 
+                });
+                this.tooltipTextcolumn.push('is already merged:')
+      
+              }
+              
+            });
+                });
+        }
   }
 
   // checkmergecolumn(rowNode:any){
@@ -703,24 +732,7 @@ export class RatingComponentComponent implements OnInit {
         // } else {
         //   updatedData = null;
         // }
-        // for (let i = 0; i < rowsdata.length; i++) {
-        //   for (let j = 0; j < rowsdata[i].length; j++) {
-        //   for(let k=0;k<this.CellStyleformArray.length;k++){
-        //     if(this.CellStyleformArray[k].outervar===i && this.CellStyleformArray[k].innervar===j){
-        //       rowsdata[i][j]['cellstyledata']=this.CellStyleformArray[k].cellstyledata
-        //     }
-        //   }
-        //   }
-        // }
-        // for (let i = 0; i < rowsdata.length; i++) {
-        //   for (let j = 0; j < rowsdata[i].length; j++) {
-        //   for(let k=0;k<this.RowstyleformArray.length;k++){
-        //     if(this.RowstyleformArray[k].outervar===i && this.RowstyleformArray[k].innervar===j){
-        //       rowsdata[i][j]['rowstyledata']=this.RowstyleformArray[k].rowstyledata
-        //     }
-        //   }
-        //   }
-        // }
+        
       
 
         for (let i = 0; i < rowsdata.length; i++) {
@@ -966,8 +978,25 @@ export class RatingComponentComponent implements OnInit {
   }
 
   mergecolumn() { 
+    console.log("rownode",this.tablerowNode)
     if(this.copyRowTableValue.length === 0){
-      this.copyRowTableValue=this.tableFormforrow.value
+     // this.copyRowTableValue=this.tableFormforrow.value
+if(this.tablerowNode.data.hasOwnProperty('rowdata')){
+     this.tableFormforrow.value.forEach((r:any,i:any)=>{
+      r.forEach((row:any,j:any)=>{
+         if(!row.hasOwnProperty('cellstyledata')){
+          row['cellstyledata']=this.tablerowNode.data.rowdata[i][j].cellstyledata
+          row['rowstyledata']=this.tablerowNode.data.rowdata[i][j].rowstyledata
+         }
+      })
+    })
+    this.copyRowTableValue=this.tableFormforrow.value
+    if(this.tablerowNode.data.mergecolumnrow.length!==0){
+      this.updaterowcolspandata=this.tablerowNode.data.mergecolumnrow
+    }
+  }else{
+    this.copyRowTableValue=this.tableFormforrow.value
+  }
     }else{
       this.tableFormforrow.value.forEach((r:any,i:any)=>{
         r.forEach((row:any,j:any)=>{
@@ -1024,7 +1053,7 @@ export class RatingComponentComponent implements OnInit {
           this.newmergecolumnlist = this.updatedDatanew;
           this.IsMergePresent = true;
         }
-
+       
         this.messageService.add({
           severity: 'success',
           summary: 'Success Message',
@@ -1033,8 +1062,9 @@ export class RatingComponentComponent implements OnInit {
         setTimeout(() => {
           this.clearNotifications();
         }, 2000);
+     
         this.IsMerge = false;
-        this.tableForm.get('mergecheckbox').setValue('');
+        //this.tableForm.get('mergecheckbox').setValue(false);
         this.Mergecolumnname = null;
       } else {
         const mergecheckboxCount = filteredData1.length;
@@ -1059,7 +1089,7 @@ export class RatingComponentComponent implements OnInit {
         let updatedData;
         if (filteredData1.length > 0) {
           updatedData = {
-            mergecheckbox: false,
+            mergecheckbox: true,
             rowspan: rowspan ? rowspan : 0,
             colspan: colspan ? colspan : 0,
             arrayofindex: newarrayofmerge,
@@ -1085,7 +1115,9 @@ export class RatingComponentComponent implements OnInit {
         setTimeout(() => {
           this.clearNotifications();
         }, 2000);
+        
         this.IsMerge = false;
+
       }
     } else {
       this.IsMerge = true;
@@ -1105,6 +1137,60 @@ export class RatingComponentComponent implements OnInit {
       this.IsCheckbox = false;
       this.IsCheckboxadd = false;
     }
+  }
+  isMergeCheckedcolumn(i:any):boolean{
+let checked=false
+
+if( this.tablerowNode.data.hasOwnProperty('mergecol')){
+  this.tablerowNode.data.mergecol.forEach((element:any)=> {
+    element.columnindex.forEach((ele:any) => {
+      if(ele===i){
+      checked=true
+      }
+      
+    });
+        });
+      }else if(this.updatedDatanew.length!==0){
+        this.updatedDatanew.forEach((element:any)=> {
+          element.columnindex.forEach((ele:any) => {
+            if(ele===i){
+             checked=true
+            }
+          });
+              });
+      }
+      else{
+        checked=false
+      }
+      return checked
+
+  }
+  isMergeChecked(i:any,j:any): boolean {
+    // Perform the necessary logic to determine the condition
+    // and return true or false accordingly
+   let checked:boolean=false
+    if( this.tablerowNode.data.hasOwnProperty('mergecolumnrow')){
+      this.tablerowNode.data.mergecolumnrow.forEach((element: any) => {
+        element.arrayofindex.forEach((ele: any) => {
+          if (ele.row === i && ele.column === j) {
+           
+           checked=true
+          }
+        });
+      });
+    }else if(this.updaterowcolspandata.length!==0){
+      this.updaterowcolspandata.forEach((element: any) => {
+        element.arrayofindex.forEach((ele: any) => {
+          if (ele.row === i && ele.column === j) {
+           
+          checked=true
+          }
+        });
+      });
+    }else{
+      checked =false
+    }
+  return checked 
   }
 
   checkboxvalid(): FormArray {

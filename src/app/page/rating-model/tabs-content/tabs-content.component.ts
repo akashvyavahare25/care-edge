@@ -89,13 +89,17 @@ export class TabsContentComponent implements OnInit {
   }
 
   accessTableRows() {
+
     let rowspanData:any={arrayofindex:[]}
      this.items.forEach((item:any)=>{
        item.children.forEach((child:any)=>{
          console.log('child',child)
-         if(child.data.type === 'table'){
-         rowspanData= child.data.mergecolumnrow
+         if (child.data.type === 'table'){
+          if(child.data.mergecolumnrow.length!==0){
+            rowspanData = child.data.mergecolumnrow;
+         
          }
+        }
        })
      })
      console.log('rowspanData',rowspanData)
@@ -132,8 +136,12 @@ export class TabsContentComponent implements OnInit {
         targetColumn.innerText = rowspanDataItem.arrayofindex[0].data.cellstyledata.rowNameValue;
         for (let i = 1; i < rowspanDataItem.colspan; i++) {
           const nextColumn = tdElements[column + i] as HTMLTableDataCellElement;
-          targetColumn.innerText += ' ' + nextColumn.innerText;
-          nextColumn.style.display = 'none';
+         
+          if (nextColumn) {
+            targetColumn.innerText += ' ' + nextColumn.innerText;
+            nextColumn.style.display = 'none';
+          }
+          
         }
       }
     })

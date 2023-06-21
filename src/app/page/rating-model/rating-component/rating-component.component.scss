@@ -35,6 +35,16 @@ table {
   height: auto;
 
 }
+.red-border {
+  border: 3px solid red !important;
+}
+.green-border {
+  border: 3px solid green !important;
+}
+
+.grey-border {
+  border: 2px solid lightgrey;
+}
 th, td {
   border: 1px solid lightgray;
  min-width: 200px;

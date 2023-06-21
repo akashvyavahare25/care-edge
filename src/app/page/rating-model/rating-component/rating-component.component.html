@@ -229,24 +229,11 @@
                 (mouseenter)="onCellMouseEntercolumn($event, indexOfelement)"
                 [pTooltip]="tooltipTextcolumn.join(', ')"
                 tooltipPosition="top"
-              >
+                [class.green-border]="isMergeCheckedcolumn(indexOfelement)" [class.grey-border]="isMergeCheckedcolumn(indexOfelement)">
+
+              
                 <div>
                   <form [formGroup]="item" role="form" class="formstyle">
-                    <!-- <input
-                      type="checkbox"
-                      formControlName="mergecheckbox"
-                     
-                      [style]="{
-                        position: 'absolute',
-                        'margin-left': '170px',
-                        'margin-top': '4px'
-                      }"
-                    />
-                    <input
-                      type="text"
-                      pInputText
-                      formControlName="columnName"
-                    /> -->
 
                     <input
                       pInputText
@@ -270,8 +257,10 @@
                 (mouseenter)="onCellMouseEnter($event, i, index)"
                 [pTooltip]="tooltipText.join(', ')"
                 tooltipPosition="top"
-                
-              >
+                [class.red-border]="isMergeChecked(i,index)" [class.grey-border]="isMergeChecked(i,index)">
+
+                <!-- [class.red-border]="ritem.get('mergecheckbox')?.value" [class.grey-border]="ritem.get('mergecheckbox')?.value" -->
+            
                 <div>
                   <form [formGroup]="ritem" role="form">
                     <input
@@ -342,7 +331,7 @@
       <div class="col-md-2">
         <p-button
           (click)="mergecolumn()"
-          label="Merge Columns"
+          label="Merge"
           styleClass="p-button-text"
           [style]="{
             'margin-top': '10px',
