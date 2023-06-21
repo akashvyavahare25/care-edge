@@ -648,8 +648,13 @@ export class RatingComponentComponent implements OnInit {
         for (let i = 0; i < rowsdata.length; i++) {
           for (let j = 0; j < rowsdata[i].length; j++) {
             if (!rowsdata[i][j].hasOwnProperty('cellstyledata')) {
+              if(this.tablerowNode.data.rowdata[i][j].length!==0){
               rowsdata[i][j]['cellstyledata'] =
                 this.tablerowNode.data.rowdata[i][j].cellstyledata;
+              }else{
+                rowsdata[i][j]['cellstyledata'] =
+                this.CellformGroup.value
+              }
             }
             if (!rowsdata[i][j].hasOwnProperty('rowstyledata')) {
               if(this.tablerowNode.data.rowdata[i].length!==0){
@@ -1303,8 +1308,8 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
       this.FormArray1.push(formGroup);
     }
     console.log('this  ->>>>>>',  this.tableFormforrow)
-    this.tableFormforrow.insert(index, this.FormArray1);
-    this.tablerowNode.data.rowdata.splice(index,0,[])
+    this.tableFormforrow.insert(index+1, this.FormArray1);
+    this.tablerowNode.data.rowdata.splice(index+1,0,[])
     this.Noofrows = this.Noofrows + 1;
     console.log('this  ->>>>>>',  this.tableFormforrow);
   }

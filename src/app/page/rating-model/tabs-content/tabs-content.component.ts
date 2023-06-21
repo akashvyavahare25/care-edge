@@ -10,7 +10,7 @@ import { tabsService } from 'src/app/services/tabs.service';
 export class TabsContentComponent implements OnInit {
   activeIndex: number = 0;
   @ViewChild('myDynamicId-0-0', { static: true }) myCellRef!: ElementRef;
-
+  selectedTabData:any
   items: any = [];
   listofitems: any = [];
   Changedvalue: any;
@@ -82,17 +82,15 @@ export class TabsContentComponent implements OnInit {
       this.items = parsedObject;
     }
     this.activeItem = this.items[0];
-    setTimeout(() => {
-      this.accessTableRows()
-},2000);
+ 
   
   }
 
-  accessTableRows() {
+  accessTableRows(selectedTab:any) {
 
-    let rowspanData:any={arrayofindex:[]}
-     this.items.forEach((item:any)=>{
-       item.children.forEach((child:any)=>{
+    let rowspanData:any=[{arrayofindex:[]}]
+    
+    selectedTab.children.forEach((child:any)=>{
          console.log('child',child)
          if (child.data.type === 'table'){
           if(child.data.mergecolumnrow.length!==0){
@@ -101,11 +99,12 @@ export class TabsContentComponent implements OnInit {
          }
         }
        })
-     })
+     
      console.log('rowspanData',rowspanData)
      this.tableRows.forEach((row, index) => {
        const rowElement = row.nativeElement as HTMLTableRowElement;
        const tdElements = rowElement.querySelectorAll('td');
+       if(rowspanData.length!==0){
   rowspanData.forEach((rowspanDataItem: any) => {
     if(rowspanDataItem.rowspan!==0){
     rowspanDataItem.arrayofindex.forEach((cellIndex: any) => {
@@ -147,7 +146,7 @@ export class TabsContentComponent implements OnInit {
     })
   }
   });
-    
+}
 
   tdElements.forEach((td, tdIndex) => {
     const tdElement = td as HTMLTableDataCellElement;
@@ -197,5 +196,13 @@ export class TabsContentComponent implements OnInit {
   }
   Navigate() {
     this.router.navigate(['/rating']);
+  }
+
+  onTabChange(event: any) {
+    const selectedTab = this.items[event.index];
+    this.selectedTabData = selectedTab.data; // Store the selected tab's data
+    setTimeout(() => {
+      this.accessTableRows(selectedTab)
+},2000);
   }
 }

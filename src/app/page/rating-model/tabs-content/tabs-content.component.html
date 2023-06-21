@@ -13,12 +13,13 @@
         
     </p-tabView> -->
 
-  <p-tabView [(activeIndex)]="activeIndex">
+  <p-tabView [(activeIndex)]="activeIndex" (onChange)="onTabChange($event)">
     <ng-template ngFor let-tab [ngForOf]="items">
       <p-tabPanel *ngIf="tab.data.hide === true" [header]="tab.data.name">
-        <ng-template pTemplate="header">
+        <!-- <ng-template pTemplate="header">
           {{ tab.data.name }}
-        </ng-template>
+        </ng-template> -->
+        <ng-container *ngIf="selectedTabData && selectedTabData === tab.data">
         <div
           class="card"
           [style]="{margin: '5px', height: '650px','overflow-y': 'auto'}"
@@ -82,7 +83,7 @@
                 *ngFor="let row2 of child.data.rowdata; let i = index"
                 [ngStyle]="{'background-color':row2[0].rowstyledata.RowBackGroundcolour?row2[0].rowstyledata.RowBackGroundcolour:'#ffffff',
                 'color':row2[0].rowstyledata.RowFontcolour?row2[0].rowstyledata.RowFontcolour:'#000000' }"        
-                [attr.id]="'tr' + (i + 1)" #tableRow>
+                [attr.id]="'tr' + (i +1)"#tableRow>
                   <td [id]="'myDynamicId-' + i +j" 
                     class="datarow"
                     *ngFor="let row1 of row2; let j = index"
@@ -225,6 +226,7 @@
             </table>
           </div>
         </div>
+        </ng-container>
         <!-- <p>{{ tab.data.name }}</p> -->
       </p-tabPanel>
     </ng-template>
