@@ -633,7 +633,7 @@ export class RatingComponentComponent implements OnInit {
                     });
                   }
                   if (this.updaterowcolspandata.length === 0) {
-                    ele.data.mergecolumnrow.forEach((e1: any) => {
+                    this.tablerowNode.data.mergecolumnrow.forEach((e1: any) => {
                       this.updaterowcolspandata.push(e1);
                     });
                   }
@@ -1295,10 +1295,26 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
     this.Noofrows = this.Noofrows - 1;
     this.tablerowNode.data.rowdata.splice(index, 1);
     console.log("after",this.tableFormforrow)
+   
+  const indicesToRemove: number[] = [];
+  this.tablerowNode.data.mergecolumnrow.forEach((element: any, k: number) => {
+    element.arrayofindex.forEach((ele: any) => {
+      if (ele.row === index) {
+        indicesToRemove.push(k);
+      }
+    });
+  });
+
+  // Remove the elements from the mergecolumnrow array in reverse order
+  for (let i = indicesToRemove.length - 1; i >= 0; i--) {
+    const indexToRemove = indicesToRemove[i];
+    this.tablerowNode.data.mergecolumnrow.splice(indexToRemove, 1);
+  }
+
   }
   
   AddRow(index:any){
- 
+    let flag:string="false"
     this.FormArray1 = this.fb.array([]);
     for (let j = 1; j <= this.Noofcolumns; j++) {
       const formGroup = new FormGroup({
@@ -1308,10 +1324,42 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
       this.FormArray1.push(formGroup);
     }
     console.log('this  ->>>>>>',  this.tableFormforrow)
+    let k=0
+   if(this.tablerowNode.data.hasOwnProperty('mergecolumnrow')){
+    this.tablerowNode.data.mergecolumnrow.forEach((element:any) => { 
+      element.arrayofindex.forEach((ele:any) => {
+        if(ele.row===index+1){
+        if(element.rowspan !==0){
+        flag="true"
+           return
+        }
+        }
+        
+      });
+      k++
+    });
+
+    if(flag==="true"){
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error Message',
+        detail: 'row not added because there row is merged!',
+      });
+      setTimeout(() => {
+        this.clearNotifications();
+      }, 2000);
+    }else{
+      this.tableFormforrow.insert(index+1, this.FormArray1);
+      this.tablerowNode.data.rowdata.splice(index+1,0,[])
+      this.Noofrows = this.Noofrows + 1;
+      console.log('this  ->>>>>>',  this.tableFormforrow);
+    }
+  }else{
     this.tableFormforrow.insert(index+1, this.FormArray1);
     this.tablerowNode.data.rowdata.splice(index+1,0,[])
     this.Noofrows = this.Noofrows + 1;
-    console.log('this  ->>>>>>',  this.tableFormforrow);
+  }
+   
   }
   
 }
