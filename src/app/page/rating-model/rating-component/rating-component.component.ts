@@ -1190,9 +1190,116 @@ if(this.tablerowNode.data.hasOwnProperty('rowdata')){
       this.IsCheckboxadd = false;
     }
   }
+
+  isRightMergeCheckedcolumn(i:any):boolean{
+    let checked=false
+    if( this.tablerowNode.data.hasOwnProperty('mergecol')){
+     
+      this.tablerowNode.data.mergecol.forEach((element:any)=> {
+        element.columnindex.forEach((ele:any,index:any) => {
+          if(ele===i){
+            if(index === 0){
+             
+              checked=true
+             }else{
+              checked=false
+             }
+          }
+          
+        });
+            });
+          }else if(this.updatedDatanew.length!==0){
+            this.updatedDatanew.forEach((element:any)=> {
+              element.columnindex.forEach((ele:any,index:any) => {
+                if(ele===i){
+                  if(index === 0){
+                   
+                    checked=true
+                   }else{
+                    checked=false
+                   }
+                }
+              });
+                  });
+          }
+          else{
+            checked=false
+          }
+          return checked
+    
+      }
+  isLeftMergeCheckedcolumn(i:any):boolean{
+    let checked=false
+    if( this.tablerowNode.data.hasOwnProperty('mergecol')){
+      this.tablerowNode.data.mergecol.forEach((element:any)=> {
+        element.columnindex.forEach((ele:any,index:any) => {
+          if(ele===i){
+            if(index === element.columnindex.length-1){
+              checked=true
+              }else{
+              checked=false
+              }
+          }
+          
+        });
+            });
+          }else if(this.updatedDatanew.length!==0){
+            this.updatedDatanew.forEach((element:any)=> {
+              element.columnindex.forEach((ele:any,index:any) => {
+                if(ele===i){
+                  if(index === element.columnindex.length-1){
+                    checked=true
+                    }else{
+                    checked=false
+                    }
+                }
+              });
+                  });
+          }
+          else{
+            checked=false
+          }
+          return checked
+    
+      }
+
+  isRightLeftMergeCheckedcolumn(i:any):boolean{
+    let checked=false
+    if( this.tablerowNode.data.hasOwnProperty('mergecol')){
+      this.tablerowNode.data.mergecol.forEach((element:any)=> {
+        element.columnindex.forEach((ele:any,index:any) => {
+          if(ele===i){
+            if( element.columnindex.length >=3 && index >=1 && element.columnindex.length-1 !=  index){
+              checked=true
+              }else{
+              checked=false
+              }
+          }
+          
+        });
+            });
+          }else if(this.updatedDatanew.length!==0){
+            this.updatedDatanew.forEach((element:any)=> {
+              element.columnindex.forEach((ele:any,index:any) => {
+                if(ele===i){
+                  if( element.columnindex.length >=3 && index >=1 && element.columnindex.length-1 !=  index){
+                    checked=true
+                    }else{
+                    checked=false
+                    }
+                }
+              });
+                  });
+          }
+          else{
+            checked=false
+          }
+          return checked
+    
+      }
+
   isMergeCheckedcolumn(i:any):boolean{
 let checked=false
-
 if( this.tablerowNode.data.hasOwnProperty('mergecol')){
   this.tablerowNode.data.mergecol.forEach((element:any)=> {
     element.columnindex.forEach((ele:any) => {
@@ -1243,7 +1350,6 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
         element.arrayofindex.forEach((ele: any,index:any) => {
           if (ele.row === i && ele.column === j) {
              if(index === 0){
-              console.log('2222222222222222222222')
               checked=true
              }else{
               checked=false
@@ -1271,7 +1377,6 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
           if (ele.row === i && ele.column === j) { 
          
           if(index === element.arrayofindex.length-1){
-            console.log('byyyyyyyyyyyyyyyyyyyyyyy111')
             checked=true
            }else{
             checked=false
@@ -1286,7 +1391,6 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
           if (ele.row === i && ele.column === j) {
             
             if(index === element.arrayofindex.length-1){
-              console.log('byyyyyyyyyyyyyyyyyyyyyyy2222')
               checked=true
              }else{
               checked=false
@@ -1313,7 +1417,6 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
           if (ele.row === i && ele.column === j) {  
             if( element.arrayofindex.length >=3 && index >=1 && element.arrayofindex.length-1 !=  index){
           // if(index % 2 != 0){
-            console.log('merger33333333333333 plus')
             checked=true
           //  }else{
             
@@ -1331,7 +1434,6 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
           if (ele.row === i && ele.column === j) {
             if( element.arrayofindex.length >=3 && index >=1 && element.arrayofindex.length-1 !=  index){
               // if(index % 2 != 0){
-                console.log('merger33333333333333 plus')
                 checked=true
               //  }else{
                 

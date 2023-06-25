@@ -229,7 +229,8 @@
                 (mouseenter)="onCellMouseEntercolumn($event, indexOfelement)"
                 [pTooltip]="tooltipTextcolumn.join(', ')"
                 tooltipPosition="top"
-                [class.green-border]="isMergeCheckedcolumn(indexOfelement)" [class.grey-border]="isMergeCheckedcolumn(indexOfelement)">
+                [class.hearderrightnone-border]="isRightMergeCheckedcolumn(indexOfelement)" [class.hearderleftnone-border]="isLeftMergeCheckedcolumn(indexOfelement)" [class.hearderleftRightnone-border]="isRightLeftMergeCheckedcolumn(indexOfelement)"
+                [class.green-border]="isMergeCheckedcolumn(indexOfelement)" [class.grey-border]="isMergeCheckedcolumn(indexOfelement)"   >
 
               
                 <div>
