@@ -18,6 +18,7 @@ interface Type {
   styleUrls: ['./rating-component.component.scss'],
 })
 export class RatingComponentComponent implements OnInit {
+  columnMergedIndex:any=[]
   files: any = [];
   @ViewChild('colorPicker') colorPicker!: ElementRef<HTMLInputElement>;
   selectedOption2: any;
@@ -321,8 +322,17 @@ export class RatingComponentComponent implements OnInit {
     });
   }
   }
-
+  clickCheckbox(val:any,index:any){
+    console.log('indexxxxxxxx',val.target.checked,index)
+    if(val.target.checked === true){
+         this.columnMergedIndex.push(index)
+    }else{
+      this.columnMergedIndex.splice(index,1)
+    }
+    console.log('colmerindex',this.columnMergedIndex)
+  }
   onCellMouseEntercolumn(event: MouseEvent, i: number){
+   
     this.tooltipTextcolumn=[]
     if( this.tablerowNode.data.hasOwnProperty('mergecol')){
     this.tablerowNode.data.mergecol.forEach((element:any)=> {
@@ -1067,25 +1077,27 @@ if(this.tablerowNode.data.hasOwnProperty('rowdata')){
     }
       if (filteredData.length !== 0) {
         let arrayofindex: any = [];
+
         for (var i = 0; i < this.tableForm.value.length; i++) {
           if (this.tableForm.value[i].mergecheckbox === true) {
             arrayofindex.push(i);
           }
-        }
-
+      }
         const mergecheckboxCount = filteredData.length;
         let updatedData;
         if (filteredData.length > 0) {
           updatedData = {
             mergecheckbox: '',
-            mergecheckboxCount: mergecheckboxCount,
+            mergecheckboxCount:this.columnMergedIndex.length,
             columnName: this.Mergecolumnname,
-            columnindex: arrayofindex,
+            columnindex: this.columnMergedIndex,
           };
         } else {
           updatedData = null;
         }
         this.updatedDatanew.push(updatedData);
+        this.columnMergedIndex=[]
+       
         if (this.updatedDatanew !== null || this.updatedDatanew.length !== 0) {
           this.newmergecolumnlist = this.updatedDatanew;
           this.IsMergePresent = true;
@@ -1134,7 +1146,7 @@ if(this.tablerowNode.data.hasOwnProperty('rowdata')){
         } else {
           updatedData = null;
         }
-
+       
         this.updaterowcolspandata.push(updatedData);
      
 

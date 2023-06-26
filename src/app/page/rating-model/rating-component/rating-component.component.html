@@ -227,6 +227,7 @@
                   let indexOfelement = index
                 "
                 (mouseenter)="onCellMouseEntercolumn($event, indexOfelement)"
+                
                 [pTooltip]="tooltipTextcolumn.join(', ')"
                 tooltipPosition="top"
                 [class.hearderrightnone-border]="isRightMergeCheckedcolumn(indexOfelement)" [class.hearderleftnone-border]="isLeftMergeCheckedcolumn(indexOfelement)" [class.hearderleftRightnone-border]="isRightLeftMergeCheckedcolumn(indexOfelement)"
@@ -244,6 +245,7 @@
                     />
                     <input
                       *ngIf="IsMerge"
+                      (change)="clickCheckbox($event,indexOfelement)"
                       type="checkbox"
                       class="checkbox"
                       formControlName="mergecheckbox"
