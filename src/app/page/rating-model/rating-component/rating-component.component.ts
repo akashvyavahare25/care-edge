@@ -247,7 +247,7 @@ export class RatingComponentComponent implements OnInit {
           this.IsMerge = true;
           formGroup.addControl(
             'mergecheckbox',
-            new FormControl(false)
+            new FormControl( rowData.tabledata[i].mergecheckbox)
           );
           this.newmergecolumnlist = rowData.mergecol;
         } else {
@@ -271,9 +271,7 @@ export class RatingComponentComponent implements OnInit {
             rowName: new FormControl(
               rowData.rowdata[i][j].cellstyledata.inputtype
             ),
-            mergecheckbox:new FormControl(
-              false
-            )
+            mergecheckbox: new FormControl(rowData.rowdata[i][j].mergecheckbox),
           });
           //formGroup.addControl('rowName', new FormControl(''));
           this.FormArray1.push(formGroup);
@@ -754,14 +752,24 @@ export class RatingComponentComponent implements OnInit {
           for (let j = 0; j < rowsdata[i].length; j++) {
             if (!rowsdata[i][j].hasOwnProperty('rowstyledata')) {
               if(this.copyRowTableValue.length!==0){
-                rowsdata[i][j]['rowstyledata']=this.copyRowTableValue[i][j].rowstyledata
+                if(this.copyRowTableValue[i][j].hasOwnProperty('rowstyledata')){
+                  rowsdata[i][j]['rowstyledata']=this.copyRowTableValue[i][j].rowstyledata
+                }else{
+                  rowsdata[i][j]['rowstyledata'] = this.RowformGroup.value;
+                }
+               
               }else{
               rowsdata[i][j]['rowstyledata'] = this.RowformGroup.value;
               }
             }
             if (!rowsdata[i][j].hasOwnProperty('cellstyledata')) {
               if(this.copyRowTableValue.length!==0){
-                rowsdata[i][j]['cellstyledata']=this.copyRowTableValue[i][j].cellstyledata
+                if(this.copyRowTableValue[i][j].hasOwnProperty('rowstyledata')){
+                  rowsdata[i][j]['cellstyledata']=this.copyRowTableValue[i][j].cellstyledata
+                }else{
+                  rowsdata[i][j]['cellstyledata'] = this.CellformGroup.value;
+                }
+               
               }else{
                 rowsdata[i][j]['cellstyledata'] = this.CellformGroup.value;
               }
@@ -1000,28 +1008,30 @@ if(this.tablerowNode.data.hasOwnProperty('rowdata')){
      this.tableFormforrow.value.forEach((r:any,i:any)=>{
       r.forEach((row:any,j:any)=>{
          if(!row.hasOwnProperty('cellstyledata')){
-          row['cellstyledata']=this.tablerowNode.data.rowdata[i][j].cellstyledata
-          row['rowstyledata']=this.tablerowNode.data.rowdata[i][j].rowstyledata
+	           row['cellstyledata']=
+		   this.tablerowNode.data.rowdata[i][j].cellstyledata;
+	  row['rowstyledata']=
+	  this.tablerowNode.data.rowdata[i][j].rowstyledata;
          }
-      })
-    })
-    this.copyRowTableValue=this.tableFormforrow.value
+      });
+    });
+    this.copyRowTableValue=this.tableFormforrow.value;
     if(this.tablerowNode.data.mergecolumnrow.length!==0){
-      this.updaterowcolspandata=this.tablerowNode.data.mergecolumnrow
+      this.updaterowcolspandata=this.tablerowNode.data.mergecolumnrow;
     }
   }else{
-    this.copyRowTableValue=this.tableFormforrow.value
+    this.copyRowTableValue=this.tableFormforrow.value;
   }
     }else{
       this.tableFormforrow.value.forEach((r:any,i:any)=>{
         r.forEach((row:any,j:any)=>{
           
-            this.copyRowTableValue[i][j].mergecheckbox=row.mergecheckbox
-            this.copyRowTableValue[i][j].rowName=row.rowName
+            this.copyRowTableValue[i][j].mergecheckbox=row.mergecheckbox;
+            this.copyRowTableValue[i][j].rowName=row.rowName;
           
         
-        })
-      })
+        });
+      });
     }
     console.log('rowform', this.tableFormforrow);
     if (this.IsMerge === true) {
@@ -1031,58 +1041,68 @@ if(this.tablerowNode.data.hasOwnProperty('rowdata')){
       let filteredData1: any = [];
       let newarrayofmerge: any = [];
       var newdata = this.copyRowTableValue;
-      console.log('this.copyRowTableValue',this.copyRowTableValue)
-      if(this.updaterowcolspandata.length > 0){
-        this.updaterowcolspandata.forEach((row:any,index:any)=>{
-         console.log('testttttttttt',row)
-          row.arrayofindex.forEach((ele:any,i:any)=>{
-            for (var k = 0; k < newdata.length; k++) {
-              for (var l = 0; l < newdata[k].length; l++) {
-                if (newdata[k][l].mergecheckbox === true) {
-                
-                  if(ele.row !== k && ele.column !== l){ 
-                    console.log('iffff elseee')
-                    const newObject: any = {};
-                    filteredData1.push(newdata[k][l]);
-                    newObject['row'] = k;
-                    newObject['column'] = l;
-                    newObject['data']=newdata[k][l]
-                    newarrayofmerge.push(newObject);
-                    }
-                
-               
-                 }
-              }
-            }
-           
-          })
-        })
-      }else{
+      console.log('this.copyRowTableValue', this.copyRowTableValue);
+      let arrayoftable: any = [];
       for (var k = 0; k < newdata.length; k++) {
         for (var l = 0; l < newdata[k].length; l++) {
           if (newdata[k][l].mergecheckbox === true) {
-          
-              console.log('elseeee')
-              const newObject: any = {};
-              filteredData1.push(newdata[k][l]);
-              newObject['row'] = k;
-              newObject['column'] = l;
-              newObject['data']=newdata[k][l]
-              newarrayofmerge.push(newObject);
-          
-         
-           }
+            const newObject: any = {};
+            newObject['row'] = k;
+            newObject['column'] = l;
+            newObject['data'] = newdata[k][l];
+            arrayoftable.push(newObject);
+            // filteredData1.push(newdata[k][l]);
+          }
         }
       }
-    }
-      if (filteredData.length !== 0) {
-        let arrayofindex: any = [];
-
-        for (var i = 0; i < this.tableForm.value.length; i++) {
-          if (this.tableForm.value[i].mergecheckbox === true) {
-            arrayofindex.push(i);
-          }
+      let newupdatearray: any = [];
+      if (this.updaterowcolspandata.length > 0) {
+        this.updaterowcolspandata.forEach((row: any) => {
+          row.arrayofindex.forEach((ele: any) => {
+            newupdatearray.push(ele);
+          });
+        });
       }
+      let sameElements: any[] = [];
+
+      for (let i = 0; i < arrayoftable.length; i++) {
+        const tableElement = arrayoftable[i];
+
+        for (let j = 0; j < newupdatearray.length; j++) {
+          const updateElement = newupdatearray[j];
+
+          if (
+            tableElement.row === updateElement.row &&
+            tableElement.column === updateElement.column
+          ) {
+            sameElements.push(tableElement);
+            arrayoftable.splice(i, 1);
+            i--; // Adjust the index after the removal
+
+            // Remove the matched element from newupdatearray
+            newupdatearray.splice(j, 1);
+            j--; // Adjust the index after the removal
+
+            break; // Exit the inner loop once a match is found
+          }
+        }
+      }
+  arrayoftable.forEach((element: any) => {
+        filteredData1.push(element.data);
+        newarrayofmerge.push(element);
+      });
+console.log(this.tableForm.value)
+
+let colarraynewupdate: any = [];
+if (this.updatedDatanew.length > 0) {
+  this.updatedDatanew.forEach((row: any) => {
+    row.columnindex.forEach((ele: any) => {
+      colarraynewupdate.push(ele);
+    });
+  });
+}
+      if (this.columnMergedIndex.length !== 0) {
+      
         const mergecheckboxCount = filteredData.length;
         let updatedData;
         if (filteredData.length > 0) {
@@ -1102,7 +1122,11 @@ if(this.tablerowNode.data.hasOwnProperty('rowdata')){
           this.newmergecolumnlist = this.updatedDatanew;
           this.IsMergePresent = true;
         }
+        if(this.tablerowNode.data.hasOwnProperty('mergecol')){
+          this.tablerowNode.data.mergecol=  this.updatedDatanew
+        }
        
+
         this.messageService.add({
           severity: 'success',
           summary: 'Success Message',
@@ -1111,13 +1135,14 @@ if(this.tablerowNode.data.hasOwnProperty('rowdata')){
         setTimeout(() => {
           this.clearNotifications();
         }, 2000);
-     
+
         this.IsMerge = false;
         //this.tableForm.get('mergecheckbox').setValue(false);
         this.Mergecolumnname = null;
       } else {
         const mergecheckboxCount = filteredData1.length;
         let sameRowValue = true;
+
         const firstRowValue = newarrayofmerge[0].row;
 
         for (let i = 1; i < newarrayofmerge.length; i++) {
@@ -1146,22 +1171,31 @@ if(this.tablerowNode.data.hasOwnProperty('rowdata')){
         } else {
           updatedData = null;
         }
-       
-        this.updaterowcolspandata.push(updatedData);
-     
 
+        this.updaterowcolspandata.push(updatedData);
+        if(this.tablerowNode.data.hasOwnProperty('mergecolumnrow')){
+          this.tablerowNode.data.mergecolumnrow= this.updaterowcolspandata
+        }
         this.messageService.add({
           severity: 'success',
           summary: 'Success Message',
           detail: 'Column Merged successful!',
         });
-      
-         this.updaterowcolspandata.forEach((row:any)=>{
-       console.log('row',row)
-          row.arrayofindex =this.removeDuplicates(row.arrayofindex);
-        
-        })
-       
+
+        //    this.updaterowcolspandata.forEach((row:any)=>{
+        //  console.log('row',row)
+        //     row.arrayofindex =this.removeDuplicates(row.arrayofindex);
+        //     if(row.rowspan===0){
+        //   if(row.arrayofindex.length!==row.colspan ){
+        //    row.colspan=row.arrayofindex.length
+        //   }
+        //     }else if(row.colspan===0){
+        //       if(row.arrayofindex.length!==row.rowspan ){
+        //       row.rowspan=row.arrayofindex.length
+        //     }
+        //   }
+        //   })
+
         setTimeout(() => {
           this.clearNotifications();
         
@@ -1347,149 +1381,295 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
        
         element.arrayofindex.forEach((ele: any,index :any) => {
           if (ele.row === i && ele.column === j) {
-            if(index === 0){
-              console.log('111111111111111111')
-              checked=true
-             }else{
-              checked=false
-             }
+            if (element.colspan !== 0 && element.rowspan === 0) {
+              if (index === 0) {
+                console.log('111111111111111111');
+                checked = true;
+              } else {
+                checked = false;
+              }
+            }
           }
         });
       });
-    }else if(this.updaterowcolspandata.length!==0){
+    } else if (this.updaterowcolspandata.length !== 0) {
       this.updaterowcolspandata.forEach((element: any) => {
-      
-        element.arrayofindex.forEach((ele: any,index:any) => {
+        element.arrayofindex.forEach((ele: any, index: any) => {
           if (ele.row === i && ele.column === j) {
-             if(index === 0){
-              checked=true
-             }else{
-              checked=false
-             }
-           
+            if (element.colspan !== 0 && element.rowspan === 0) {
+              if (index === 0) {
+                console.log('2222222222222222222222');
+                checked = true;
+              } else {
+                checked = false;
+              }
+            }
           }
         });
       });
-    }else{
-      checked =false
+    } else {
+      checked = false;
     }
-  return checked 
+    return checked;
   }
 
-  isMergerleftChecked(i:any,j:any): boolean {
+  isMergerleftChecked(i: any, j: any): boolean {
     // Perform the necessary logic to determine the condition
     // and return true or false accordingly
-  
-   let checked:boolean=false
-    if( this.tablerowNode.data.hasOwnProperty('mergecolumnrow')){
+
+    let checked: boolean = false;
+    if (this.tablerowNode.data.hasOwnProperty('mergecolumnrow')) {
       this.tablerowNode.data.mergecolumnrow.forEach((element: any) => {
         // console.log('leftttt testarrayofinde22222222', element)
-        element.arrayofindex.forEach((ele: any,index:any) => {
-
-          if (ele.row === i && ele.column === j) { 
-         
-          if(index === element.arrayofindex.length-1){
-            checked=true
-           }else{
-            checked=false
-           }
+        element.arrayofindex.forEach((ele: any, index: any) => {
+          if (ele.row === i && ele.column === j) {
+            if (element.colspan !== 0 && element.rowspan === 0) {
+              if (index === element.arrayofindex.length - 1) {
+                console.log('byyyyyyyyyyyyyyyyyyyyyyy111');
+                checked = true;
+              } else {
+                checked = false;
+              }
+            }
           }
         });
       });
-    }else if(this.updaterowcolspandata.length!==0){
+    } else if (this.updaterowcolspandata.length !== 0) {
       this.updaterowcolspandata.forEach((element: any) => {
         // console.log('left     testarrayofinde', element.arrayofindex)
-        element.arrayofindex.forEach((ele: any,index:any) => {
+        element.arrayofindex.forEach((ele: any, index: any) => {
           if (ele.row === i && ele.column === j) {
-            
-            if(index === element.arrayofindex.length-1){
-              checked=true
-             }else{
-              checked=false
-             }
-            
-          
+            if (element.colspan !== 0 && element.rowspan === 0) {
+              if (index === element.arrayofindex.length - 1) {
+                console.log('byyyyyyyyyyyyyyyyyyyyyyy2222');
+                checked = true;
+              } else {
+                checked = false;
+              }
+            }
           }
         });
       });
-    }else{
-      checked =false
+    } else {
+      checked = false;
     }
-  return checked 
+    return checked;
   }
-  isMergerleftRightChecked(i:any,j:any): boolean {
+  isMergerleftRightChecked(i: any, j: any): boolean {
     // Perform the necessary logic to determine the condition
     // and return true or false accordingly
-  
-   let checked:boolean=false
-    if( this.tablerowNode.data.hasOwnProperty('mergecolumnrow')){
+
+    let checked: boolean = false;
+    if (this.tablerowNode.data.hasOwnProperty('mergecolumnrow')) {
       this.tablerowNode.data.mergecolumnrow.forEach((element: any) => {
         // console.log('leftttt testarrayofinde22222222', element)
-        element.arrayofindex.forEach((ele: any,index:any) => {
-          if (ele.row === i && ele.column === j) {  
-            if( element.arrayofindex.length >=3 && index >=1 && element.arrayofindex.length-1 !=  index){
-          // if(index % 2 != 0){
-            checked=true
-          //  }else{
-            
-           }else{
-            checked=false
-           }
-          // }
+        element.arrayofindex.forEach((ele: any, index: any) => {
+          if (ele.row === i && ele.column === j) {
+            if (
+              element.arrayofindex.length >= 3 &&
+              index >= 1 &&
+              element.arrayofindex.length - 1 != index
+            ) {
+              // if(index % 2 != 0){
+              console.log('merger33333333333333 plus');
+              checked = true;
+              //  }else{
+            } else {
+              checked = false;
+            }
+            // }
           }
         });
       });
-    }else if(this.updaterowcolspandata.length!==0){
+    } else if (this.updaterowcolspandata.length !== 0) {
       this.updaterowcolspandata.forEach((element: any) => {
         // console.log('left     testarrayofinde', element)
-        element.arrayofindex.forEach((ele: any,index:any) => {
+        element.arrayofindex.forEach((ele: any, index: any) => {
           if (ele.row === i && ele.column === j) {
-            if( element.arrayofindex.length >=3 && index >=1 && element.arrayofindex.length-1 !=  index){
+            if (
+              element.arrayofindex.length >= 3 &&
+              index >= 1 &&
+              element.arrayofindex.length - 1 != index
+            ) {
               // if(index % 2 != 0){
-                checked=true
+              console.log('merger33333333333333 plus');
+              checked = true;
               //  }else{
-                
-               }else{
-                checked=false
-               }
-            
-          
+            } else {
+              checked = false;
+            }
           }
         });
       });
-    }else{
-      checked =false
+    } else {
+      checked = false;
     }
-  return checked 
+    return checked;
   }
-  isMergeChecked(i:any,j:any): boolean {
-  
-   let checked:boolean=false
-    if( this.tablerowNode.data.hasOwnProperty('mergecolumnrow')){
+
+  isMergerbottomChecked(i: any, j: any): boolean {
+    // Perform the necessary logic to determine the condition
+    // and return true or false accordingly
+
+    let checked: boolean = false;
+    if (this.tablerowNode.data.hasOwnProperty('mergecolumnrow')) {
+      this.tablerowNode.data.mergecolumnrow.forEach((element: any) => {
+        element.arrayofindex.forEach((ele: any, index: any) => {
+          if (ele.row === i && ele.column === j) {
+            if (element.rowspan !== 0 && element.colspan === 0) {
+              if (index === 0) {
+                console.log('111111111111111111');
+                checked = true;
+              } else {
+                checked = false;
+              }
+            }
+          }
+        });
+      });
+    } else if (this.updaterowcolspandata.length !== 0) {
+      this.updaterowcolspandata.forEach((element: any) => {
+        element.arrayofindex.forEach((ele: any, index: any) => {
+          if (ele.row === i && ele.column === j) {
+            if (element.rowspan !== 0 && element.colspan === 0) {
+              if (index === 0) {
+                console.log('2222222222222222222222');
+                checked = true;
+              } else {
+                checked = false;
+              }
+            }
+          }
+        });
+      });
+    } else {
+      checked = false;
+    }
+    return checked;
+  }
+
+  isMergertopChecked(i: any, j: any): boolean {
+    // Perform the necessary logic to determine the condition
+    // and return true or false accordingly
+
+    let checked: boolean = false;
+    if (this.tablerowNode.data.hasOwnProperty('mergecolumnrow')) {
+      this.tablerowNode.data.mergecolumnrow.forEach((element: any) => {
+        // console.log('leftttt testarrayofinde22222222', element)
+        element.arrayofindex.forEach((ele: any, index: any) => {
+          if (ele.row === i && ele.column === j) {
+            if (element.rowspan !== 0 && element.colspan === 0) {
+              if (index === element.arrayofindex.length - 1) {
+                console.log('byyyyyyyyyyyyyyyyyyyyyyy111');
+                checked = true;
+              } else {
+                checked = false;
+              }
+            }
+          }
+        });
+      });
+    } else if (this.updaterowcolspandata.length !== 0) {
+      this.updaterowcolspandata.forEach((element: any) => {
+        // console.log('left     testarrayofinde', element.arrayofindex)
+        element.arrayofindex.forEach((ele: any, index: any) => {
+          if (ele.row === i && ele.column === j) {
+            if (element.rowspan !== 0 && element.colspan === 0) {
+              if (index === element.arrayofindex.length - 1) {
+                console.log('byyyyyyyyyyyyyyyyyyyyyyy2222');
+                checked = true;
+              } else {
+                checked = false;
+              }
+            }
+          }
+        });
+      });
+    } else {
+      checked = false;
+    }
+    return checked;
+  }
+
+  isMergertopbottomChecked(i: any, j: any): boolean {
+    // Perform the necessary logic to determine the condition
+    // and return true or false accordingly
+
+    let checked: boolean = false;
+    if (this.tablerowNode.data.hasOwnProperty('mergecolumnrow')) {
+      this.tablerowNode.data.mergecolumnrow.forEach((element: any) => {
+        // console.log('leftttt testarrayofinde22222222', element)
+        element.arrayofindex.forEach((ele: any, index: any) => {
+          if (ele.row === i && ele.column === j) {
+            if (
+              element.arrayofindex.length >= 3 &&
+              index >= 1 &&
+              element.arrayofindex.length - 1 != index
+            ) {
+              // if(index % 2 != 0){
+
+              console.log('merger33333333333333 plus');
+              checked = true;
+              //  }else{
+            } else {
+              checked = false;
+            }
+            // }
+          }
+        });
+      });
+    } else if (this.updaterowcolspandata.length !== 0) {
+      this.updaterowcolspandata.forEach((element: any) => {
+        // console.log('left     testarrayofinde', element)
+        element.arrayofindex.forEach((ele: any, index: any) => {
+          if (ele.row === i && ele.column === j) {
+            if (
+              element.arrayofindex.length >= 3 &&
+              index >= 1 &&
+              element.arrayofindex.length - 1 != index
+            ) {
+              // if(index % 2 != 0){
+              console.log('merger33333333333333 plus');
+              checked = true;
+              //  }else{
+            } else {
+              checked = false;
+            }
+          }
+        });
+      });
+    } else {
+      checked = false;
+    }
+    return checked;
+  }
+
+  isMergeChecked(i: any, j: any): boolean {
+    let checked: boolean = false;
+    if (this.tablerowNode.data.hasOwnProperty('mergecolumnrow')) {
       this.tablerowNode.data.mergecolumnrow.forEach((element: any) => {
         // console.log('testarrayofinde22222222', element)
         element.arrayofindex.forEach((ele: any) => {
           if (ele.row === i && ele.column === j) {
             // console.log('conshi,j',i,j)
-           checked=true
+            checked = true;
           }
         });
       });
-    }else if(this.updaterowcolspandata.length!==0){
+    } else if (this.updaterowcolspandata.length !== 0) {
       this.updaterowcolspandata.forEach((element: any) => {
         // console.log('testarrayofinde', element)
-        element.arrayofindex.forEach((ele: any,index:any) => {
+        element.arrayofindex.forEach((ele: any, index: any) => {
           if (ele.row === i && ele.column === j) {
-          
             // console.log('conshi,j ->length',i,j)
-          checked=true
+            checked = true;
           }
         });
       });
-    }else{
-      checked =false
+    } else {
+      checked = false;
     }
-  return checked 
+    return checked;
   }
 
   checkboxvalid(): FormArray {

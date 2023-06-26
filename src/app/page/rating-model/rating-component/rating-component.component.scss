@@ -38,6 +38,18 @@ table {
 .red-border {
   border: 3px solid blue !important;
 }
+.bottomnone-border{
+  border-bottom: none!important;
+}
+.topnone-border{
+  border-top: none!important;
+}
+.topbottomnone-border{
+  border-bottom: none!important;
+  border-top: none!important;
+}
+
+
 .leftnone-border{
   border-left: none !important;
 }

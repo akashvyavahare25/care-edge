@@ -260,10 +260,14 @@
                 (mouseenter)="onCellMouseEnter($event, i, index)"
                 [pTooltip]="tooltipText.join(', ')"
                 tooltipPosition="top"
-                [class.red-border]="isMergeChecked(i,index)" [class.grey-border]="isMergeChecked(i,index)"  [class.rightnone-border]="isMergerightChecked(i,index)" [class.leftnone-border]="isMergerleftChecked(i,index)" [class.leftRightnone-border]="isMergerleftRightChecked(i,index)">
+                [class.red-border]="isMergeChecked(i,index)" [class.grey-border]="isMergeChecked(i,index)"
+                [class.bottomnone-border]="isMergerbottomChecked(i,index)"
+                [class.topnone-border]="isMergertopChecked(i,index)" [class.topbottomnone-border]="isMergertopbottomChecked(i,index)"
 
+                [class.leftRightnone-border]="isMergerleftRightChecked(i,index)"
+                [class.rightnone-border]="isMergerightChecked(i,index)" [class.leftnone-border]="isMergerleftChecked(i,index)">
                 <!-- [class.red-border]="ritem.get('mergecheckbox')?.value" [class.grey-border]="ritem.get('mergecheckbox')?.value" -->
-                <!-- [class.leftnone-border]="isMergeChecked(i,index)" -->
+            
                 <div>
                   <form [formGroup]="ritem" role="form">
                     <input

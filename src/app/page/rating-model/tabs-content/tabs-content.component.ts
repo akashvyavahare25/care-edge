@@ -59,11 +59,14 @@ export class TabsContentComponent implements OnInit {
         element.children.forEach((ele: any) => {
           if (ele.data.type === 'table') {
             this.columntotal = [];
+            
             for (let j = 0; j < ele.data.rowdata[0].length; j++) {
+              if(ele.data.rowdata.hasOwnProperty('cellstyledata')){
               if (ele.data.rowdata[0][j].cellstyledata.inputtype === 'number') {
                 this.columntotal.push(j);
               }
             }
+          }
 
             for (let i = 0; i < this.columntotal.length; i++) {
               for (let j = 0; j < ele.data.tabledata.length; j++) {
@@ -125,25 +128,32 @@ export class TabsContentComponent implements OnInit {
         }
       }
     });
-  }else if(rowspanDataItem.colspan!==0){
-    rowspanDataItem.arrayofindex.forEach((cellIndex: any) => {
-      const { row, column } = cellIndex;
-
+  }
+  else if (rowspanDataItem.colspan !== 0) {
+    // rowspanDataItem.arrayofindex.forEach((cellIndex: any) => {
+      const { row, column } =  rowspanDataItem.arrayofindex[0];
+  
       if (index === row && tdElements.length > column) {
         const targetColumn = tdElements[column] as HTMLTableDataCellElement;
+
         targetColumn.colSpan = rowspanDataItem.colspan;
-        targetColumn.innerText = rowspanDataItem.arrayofindex[0].data.cellstyledata.rowNameValue;
+        let cellValue = targetColumn.innerText;
         for (let i = 1; i < rowspanDataItem.colspan; i++) {
-          const nextColumn = tdElements[column + i] as HTMLTableDataCellElement;
-         
-          if (nextColumn) {
-            targetColumn.innerText += ' ' + nextColumn.innerText;
+          const nextColumnIndex = column + i;
+          console.log("nextcolumnindex",nextColumnIndex)
+          console.log("colspan",rowspanDataItem.colspan)
+          if (nextColumnIndex <tdElements.length-1) {
+            
+            const nextColumn = tdElements[nextColumnIndex] as HTMLTableDataCellElement;
+            cellValue += ' ' + nextColumn.innerText;
             nextColumn.style.display = 'none';
           }
-          
         }
+  
+        targetColumn.innerText = cellValue;
       }
-    })
+     
+    
   }
   });
 }
