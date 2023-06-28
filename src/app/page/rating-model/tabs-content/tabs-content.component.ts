@@ -117,14 +117,19 @@ export class TabsContentComponent implements OnInit {
         const targetColumn = tdElements[column] as HTMLTableDataCellElement;
         if (index === rowspanDataItem.arrayofindex[0].row) {
           targetColumn.rowSpan = rowspanDataItem.rowspan; // Set rowspan for the specified row and column
-          targetColumn.innerText = rowspanDataItem.arrayofindex[0].data.cellstyledata.rowNameValue;
+        //  targetColumn.innerText = rowspanDataItem.arrayofindex[0].data.cellstyledata.rowNameValue;
+          
           for (let i = 1; i < rowspanDataItem.rowspan; i++) {
             const nextRow =  this.tableRows.get(index + i)?.nativeElement as HTMLTableRowElement;
             const nextColumn = nextRow?.querySelectorAll('td')[column] as HTMLTableDataCellElement;
-            targetColumn.innerText += ' ' + nextColumn.innerText; // Append the value of the next row's cell
+          //  targetColumn.innerText += ' ' + nextColumn.innerText; // Append the value of the next row's cell
+          console.log("row")
           }
         } else {
-          targetColumn.style.display = 'none'; // Hide the specified row and column
+          setTimeout(() => {
+            targetColumn.style.setProperty('display','none','important')
+            },50);
+         console.log("none")
         }
       }
     });
@@ -137,20 +142,19 @@ export class TabsContentComponent implements OnInit {
         const targetColumn = tdElements[column] as HTMLTableDataCellElement;
 
         targetColumn.colSpan = rowspanDataItem.colspan;
-        let cellValue = targetColumn.innerText;
+       // let cellValue = targetColumn.innerText;
         for (let i = 1; i < rowspanDataItem.colspan; i++) {
           const nextColumnIndex = column + i;
-          console.log("nextcolumnindex",nextColumnIndex)
-          console.log("colspan",rowspanDataItem.colspan)
-          if (nextColumnIndex <tdElements.length-1) {
+          if (nextColumnIndex <tdElements.length) {
             
             const nextColumn = tdElements[nextColumnIndex] as HTMLTableDataCellElement;
-            cellValue += ' ' + nextColumn.innerText;
+         //   cellValue += ' ' + nextColumn.innerText;
             nextColumn.style.display = 'none';
+            console.log("nonetd")
           }
         }
   
-        targetColumn.innerText = cellValue;
+       // targetColumn.innerText = cellValue;
       }
      
     
@@ -160,7 +164,7 @@ export class TabsContentComponent implements OnInit {
 
   tdElements.forEach((td, tdIndex) => {
     const tdElement = td as HTMLTableDataCellElement;
-   
+  
 });
   
 });
@@ -213,6 +217,6 @@ export class TabsContentComponent implements OnInit {
     this.selectedTabData = selectedTab.data; // Store the selected tab's data
     setTimeout(() => {
       this.accessTableRows(selectedTab)
-},2000);
+},50);
   }
 }

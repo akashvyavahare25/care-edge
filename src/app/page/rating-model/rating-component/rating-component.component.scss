@@ -35,6 +35,12 @@ table {
   height: auto;
 
 }
+.disabled-cell {
+  opacity: 0.5;
+  background-color: lightgray;
+  pointer-events: none;
+  /* Additional styling for disabled cells */
+}
 .red-border {
   border: 3px solid blue !important;
 }

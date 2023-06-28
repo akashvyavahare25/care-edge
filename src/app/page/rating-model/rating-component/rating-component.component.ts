@@ -1000,6 +1000,47 @@ export class RatingComponentComponent implements OnInit {
     this.RowformGroup.reset();
   }
 
+  isCellDisabled(i:any,j:any){
+    let checked:boolean=false
+    if( this.tablerowNode.data.hasOwnProperty('mergecolumnrow')){
+      this.tablerowNode.data.mergecolumnrow.forEach((element: any) => { 
+        element.arrayofindex.forEach((ele: any,index :any) => {
+          if (ele.row === i && ele.column === j) {
+            //if (element.colspan !== 0 && element.rowspan === 0) {
+              if (index === 0) {
+                console.log('111111111111111111');
+                checked = false;
+              } else {
+                checked = true;
+              }
+            
+        //  }
+        }
+        });
+      });
+    } else if (this.updaterowcolspandata.length !== 0) {
+      this.updaterowcolspandata.forEach((element: any) => {
+        element.arrayofindex.forEach((ele: any, index: any) => {
+         
+          if (ele.row === i && ele.column === j) {
+         //   if (element.colspan !== 0 && element.rowspan === 0) {
+              if (index === 0) {
+                console.log('2222222222222222222222');
+                checked = false;
+              } else {
+                checked = true;
+              }
+          //  }
+          }
+        
+        });
+      });
+    } else {
+      checked = false;
+    }
+    return checked;
+
+}
   mergecolumn() { 
     console.log("rownode",this.tablerowNode)
     if(this.copyRowTableValue.length === 0){
@@ -1122,11 +1163,7 @@ if (this.updatedDatanew.length > 0) {
           this.newmergecolumnlist = this.updatedDatanew;
           this.IsMergePresent = true;
         }
-        if(this.tablerowNode.data.hasOwnProperty('mergecol')){
-          this.tablerowNode.data.mergecol=  this.updatedDatanew
-        }
-       
-
+    
         this.messageService.add({
           severity: 'success',
           summary: 'Success Message',
@@ -1173,28 +1210,12 @@ if (this.updatedDatanew.length > 0) {
         }
 
         this.updaterowcolspandata.push(updatedData);
-        if(this.tablerowNode.data.hasOwnProperty('mergecolumnrow')){
-          this.tablerowNode.data.mergecolumnrow= this.updaterowcolspandata
-        }
+  
         this.messageService.add({
           severity: 'success',
           summary: 'Success Message',
           detail: 'Column Merged successful!',
         });
-
-        //    this.updaterowcolspandata.forEach((row:any)=>{
-        //  console.log('row',row)
-        //     row.arrayofindex =this.removeDuplicates(row.arrayofindex);
-        //     if(row.rowspan===0){
-        //   if(row.arrayofindex.length!==row.colspan ){
-        //    row.colspan=row.arrayofindex.length
-        //   }
-        //     }else if(row.colspan===0){
-        //       if(row.arrayofindex.length!==row.rowspan ){
-        //       row.rowspan=row.arrayofindex.length
-        //     }
-        //   }
-        //   })
 
         setTimeout(() => {
           this.clearNotifications();
@@ -1380,6 +1401,7 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
       this.tablerowNode.data.mergecolumnrow.forEach((element: any) => {
        
         element.arrayofindex.forEach((ele: any,index :any) => {
+          if(element.rowspan===0){ 
           if (ele.row === i && ele.column === j) {
             if (element.colspan !== 0 && element.rowspan === 0) {
               if (index === 0) {
@@ -1390,11 +1412,13 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
               }
             }
           }
+        }
         });
       });
     } else if (this.updaterowcolspandata.length !== 0) {
       this.updaterowcolspandata.forEach((element: any) => {
         element.arrayofindex.forEach((ele: any, index: any) => {
+          if(element.rowspan===0){ 
           if (ele.row === i && ele.column === j) {
             if (element.colspan !== 0 && element.rowspan === 0) {
               if (index === 0) {
@@ -1405,6 +1429,7 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
               }
             }
           }
+        }
         });
       });
     } else {
@@ -1422,6 +1447,7 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
       this.tablerowNode.data.mergecolumnrow.forEach((element: any) => {
         // console.log('leftttt testarrayofinde22222222', element)
         element.arrayofindex.forEach((ele: any, index: any) => {
+          if(element.rowspan===0){ 
           if (ele.row === i && ele.column === j) {
             if (element.colspan !== 0 && element.rowspan === 0) {
               if (index === element.arrayofindex.length - 1) {
@@ -1432,12 +1458,14 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
               }
             }
           }
+        }
         });
       });
     } else if (this.updaterowcolspandata.length !== 0) {
       this.updaterowcolspandata.forEach((element: any) => {
         // console.log('left     testarrayofinde', element.arrayofindex)
         element.arrayofindex.forEach((ele: any, index: any) => {
+          if(element.rowspan===0){ 
           if (ele.row === i && ele.column === j) {
             if (element.colspan !== 0 && element.rowspan === 0) {
               if (index === element.arrayofindex.length - 1) {
@@ -1447,6 +1475,7 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
                 checked = false;
               }
             }
+          }
           }
         });
       });
@@ -1464,6 +1493,7 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
       this.tablerowNode.data.mergecolumnrow.forEach((element: any) => {
         // console.log('leftttt testarrayofinde22222222', element)
         element.arrayofindex.forEach((ele: any, index: any) => {
+          if(element.rowspan===0){ 
           if (ele.row === i && ele.column === j) {
             if (
               element.arrayofindex.length >= 3 &&
@@ -1479,12 +1509,14 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
             }
             // }
           }
+          }
         });
       });
     } else if (this.updaterowcolspandata.length !== 0) {
       this.updaterowcolspandata.forEach((element: any) => {
         // console.log('left     testarrayofinde', element)
         element.arrayofindex.forEach((ele: any, index: any) => {
+          if(element.rowspan===0){ 
           if (ele.row === i && ele.column === j) {
             if (
               element.arrayofindex.length >= 3 &&
@@ -1499,6 +1531,7 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
               checked = false;
             }
           }
+        }
         });
       });
     } else {
@@ -1515,6 +1548,7 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
     if (this.tablerowNode.data.hasOwnProperty('mergecolumnrow')) {
       this.tablerowNode.data.mergecolumnrow.forEach((element: any) => {
         element.arrayofindex.forEach((ele: any, index: any) => {
+          if(element.colspan===0){ 
           if (ele.row === i && ele.column === j) {
             if (element.rowspan !== 0 && element.colspan === 0) {
               if (index === 0) {
@@ -1525,11 +1559,13 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
               }
             }
           }
+        }
         });
       });
     } else if (this.updaterowcolspandata.length !== 0) {
       this.updaterowcolspandata.forEach((element: any) => {
         element.arrayofindex.forEach((ele: any, index: any) => {
+          if(element.colspan===0){ 
           if (ele.row === i && ele.column === j) {
             if (element.rowspan !== 0 && element.colspan === 0) {
               if (index === 0) {
@@ -1540,6 +1576,7 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
               }
             }
           }
+        }
         });
       });
     } else {
@@ -1557,6 +1594,7 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
       this.tablerowNode.data.mergecolumnrow.forEach((element: any) => {
         // console.log('leftttt testarrayofinde22222222', element)
         element.arrayofindex.forEach((ele: any, index: any) => {
+          if(element.colspan===0){ 
           if (ele.row === i && ele.column === j) {
             if (element.rowspan !== 0 && element.colspan === 0) {
               if (index === element.arrayofindex.length - 1) {
@@ -1567,12 +1605,14 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
               }
             }
           }
+        }
         });
       });
     } else if (this.updaterowcolspandata.length !== 0) {
       this.updaterowcolspandata.forEach((element: any) => {
         // console.log('left     testarrayofinde', element.arrayofindex)
         element.arrayofindex.forEach((ele: any, index: any) => {
+          if(element.colspan===0){ 
           if (ele.row === i && ele.column === j) {
             if (element.rowspan !== 0 && element.colspan === 0) {
               if (index === element.arrayofindex.length - 1) {
@@ -1582,6 +1622,7 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
                 checked = false;
               }
             }
+          }
           }
         });
       });
@@ -1600,6 +1641,7 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
       this.tablerowNode.data.mergecolumnrow.forEach((element: any) => {
         // console.log('leftttt testarrayofinde22222222', element)
         element.arrayofindex.forEach((ele: any, index: any) => {
+         if(element.colspan===0){ 
           if (ele.row === i && ele.column === j) {
             if (
               element.arrayofindex.length >= 3 &&
@@ -1614,6 +1656,7 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
             } else {
               checked = false;
             }
+          }
             // }
           }
         });
@@ -1622,6 +1665,7 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
       this.updaterowcolspandata.forEach((element: any) => {
         // console.log('left     testarrayofinde', element)
         element.arrayofindex.forEach((ele: any, index: any) => {
+          if(element.colspan===0){ 
           if (ele.row === i && ele.column === j) {
             if (
               element.arrayofindex.length >= 3 &&
@@ -1636,6 +1680,7 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
               checked = false;
             }
           }
+        }
         });
       });
     } else {

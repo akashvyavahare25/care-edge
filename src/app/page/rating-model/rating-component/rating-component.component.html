@@ -265,7 +265,8 @@
                 [class.topnone-border]="isMergertopChecked(i,index)" [class.topbottomnone-border]="isMergertopbottomChecked(i,index)"
 
                 [class.leftRightnone-border]="isMergerleftRightChecked(i,index)"
-                [class.rightnone-border]="isMergerightChecked(i,index)" [class.leftnone-border]="isMergerleftChecked(i,index)">
+                [class.rightnone-border]="isMergerightChecked(i,index)" [class.leftnone-border]="isMergerleftChecked(i,index)"
+                [class.disabled-cell]="isCellDisabled(i,index)">
                 <!-- [class.red-border]="ritem.get('mergecheckbox')?.value" [class.grey-border]="ritem.get('mergecheckbox')?.value" -->
             
                 <div>
@@ -275,6 +276,7 @@
                       pInputText
                       formControlName="rowName"
                       (click)="EditCell(i, index)"
+                      [class.disabled-cell]="isCellDisabled(i,index)"
                     />
                     <input
                       [id]="'DynamicId-' + i + index"
@@ -282,7 +284,7 @@
                       type="checkbox"
                       class="checkbox"
                       formControlName="mergecheckbox"
-                     
+                      [class.disabled-cell]="isCellDisabled(i,index)"
                     />
                   </form>
                 </div>
