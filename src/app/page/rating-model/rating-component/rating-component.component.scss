@@ -29,12 +29,44 @@
   margin-top: 10px;
 }
 table {
-  margin-top: 30px;
+
   border: 1px solid lightgray;
-  width: 300px;
+  width: 100%;
   height: auto;
 
 }
+
+.input-field1{
+  height: 40px;
+  width:100%;
+  border:none;
+}
+
+th, td {
+  border: 1px solid lightgray;
+ min-width: 200px;
+  height: auto;
+
+}
+
+
+.table-container {
+  margin-top: 20px;
+  max-height: 180px; /* Set the maximum height for the container */
+  overflow-y: auto; /* Enable vertical scrolling */
+overflow-x:auto
+}
+
+.popupcontainer{
+  background-color: #ECECEC;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+.inputstyle{
+  width: 270px;
+    margin-left: 5px;
+}
+
 .disabled-cell {
   opacity: 0.5;
   background-color: lightgray;
@@ -85,12 +117,7 @@ table {
 
 
 
-th, td {
-  border: 1px solid lightgray;
- min-width: 200px;
-  height: auto;
 
-}
 .tdstyle{
   padding-left: 14px;
 }

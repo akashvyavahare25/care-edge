@@ -60,20 +60,18 @@ export class TabsContentComponent implements OnInit {
           if (ele.data.type === 'table') {
             this.columntotal = [];
             
-            for (let j = 0; j < ele.data.rowdata[0].length; j++) {
-              if(ele.data.rowdata.hasOwnProperty('cellstyledata')){
-              if (ele.data.rowdata[0][j].cellstyledata.inputtype === 'number') {
+            for (let j = 0; j < ele.data.data[0].columns.length; j++) {  
+              if (ele.data.data[0].columns[j].coltype === 'number') {
                 this.columntotal.push(j);
               }
-            }
           }
 
             for (let i = 0; i < this.columntotal.length; i++) {
-              for (let j = 0; j < ele.data.tabledata.length; j++) {
+              for (let j = 0; j < ele.data.data.length; j++) {
                 if (this.columntotal[i] === j) {
-                  ele.data.tabledata[j]['columntotal'] = 0;
-                  ele.data.tabledata[j]['factor'] = 0;
-                  ele.data.tabledata[j]['score'] = 0;
+                  ele.data.data[0].columns[j]['columntotal'] = 0;
+                  ele.data.data[0].columns[j]['factor'] = 0;
+                  ele.data.data[0].columns[j]['score'] = 0;
                 }
               }
             }
@@ -175,37 +173,37 @@ export class TabsContentComponent implements OnInit {
     event: any,
     rowIndex: any,
     columnIndex: any,
-    rowdata: any,
+    data: any,
     rowValue: any,
     tbdata: any
   ) {
     this.total = 0;
     let k = 0;
     this.colfactor = 0;
-    rowValue.cellstyledata['value'] = parseInt(event.target.value);
+    rowValue.value = parseInt(event.target.value);
     if (
-      rowValue.cellstyledata.hasOwnProperty('value') &&
-      rowValue.cellstyledata.inputtype === 'number'
+      rowValue.hasOwnProperty('value') &&
+      rowValue.colType === 'number'
     ) {
-      rowdata.forEach((item: any) => {
-        item.forEach((ele: any, i: any) => {
+      data.forEach((item: any) => {
+        item.columns.forEach((ele: any, i: any) => {
           if (
-            ele.cellstyledata.hasOwnProperty('value') &&
-            ele.cellstyledata.inputtype === 'number' &&
+            ele.hasOwnProperty('value') &&
+            ele.colType === 'number' &&
             i === columnIndex
           )
-            if (!isNaN(ele.cellstyledata.value)) {
+            if (!isNaN(ele.value)) {
               k++;
-              this.total += ele.cellstyledata.value;
+              this.total += ele.value;
             }
         });
       });
       this.colfactor = this.total / k;
       this.colscore = this.total / k;
-
-      tbdata[columnIndex].columntotal = this.total;
-      tbdata[columnIndex].factor = this.colfactor;
-      tbdata[columnIndex].score = this.colscore;
+     
+      tbdata.columns[columnIndex].columntotal = this.total;
+      tbdata.columns[columnIndex].factor = this.colfactor;
+      tbdata.columns[columnIndex].score = this.colscore;
     }
   }
   Navigate() {

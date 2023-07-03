@@ -152,7 +152,7 @@
   [style]="{ width: '80vw', height: '1200px' }"
 >
   <ng-template pTemplate="header">
-    <strong class="text-xl font-bold">Add Container</strong>
+    <strong class="text-xl font-bold">Add Container or Table</strong>
     <!-- <label><input type="radio" [(ngModel)]="selectedOption" value="container" (click)="showcontaineronclick()" > Add Container </label>
     <label><input type="radio" [(ngModel)]="selectedOption" value="table" (click)="showTableonclick()" > Table</label> -->
   </ng-template>
@@ -183,17 +183,18 @@
       <label htmlFor="username">Title</label>
     </span>
   </div>
-  <div *ngIf="containerValue === 'table'">
+  <div *ngIf="containerValue === 'table'" [ngStyle]="{'background-color':'#ECECEC'}">
     <div class="row">
       <div class="col-md-3">
         <span class="p-float-label mt-4">
-          <input type="text" pInputText [(ngModel)]="tableName" />
+          <input  class="inputstyle"type="text" pInputText [(ngModel)]="tableName" />
           <label htmlFor="username">Title</label>
         </span>
       </div>
       <div class="col-md-3" style="margin-left: 55px">
         <span class="p-float-label mt-4">
           <input
+          class="inputstyle"
             type="number"
             pInputText
             [(ngModel)]="Noofcolumns"
@@ -205,6 +206,7 @@
       <div class="col-md-3" style="margin-left: 55px">
         <span class="p-float-label mt-4">
           <input
+           class="inputstyle"
             type="number"
             pInputText
             [(ngModel)]="Noofrows"
@@ -215,13 +217,13 @@
       </div>
     </div>
 
-    <span>
-      <label [style]="{ margin: '10px' }"> Select Columns to merged</label>
-      <div class="column-class">
-        <table>
+   
+      <!-- <label [style]="{ margin: '10px' }"> Select Columns to merged</label> -->
+      <div class="table-container">
+        <table [style]="{'background-color':'white'}">
           <thead>
-            <tr>
-              <th
+            <!-- <tr>
+              <th 
                 *ngFor="
                   let item of tableForm.controls;
                   let indexOfelement = index
@@ -238,10 +240,11 @@
                   <form [formGroup]="item" role="form" class="formstyle">
 
                     <input
+                    class="input-field1"
                       pInputText
                       type="text"
-                      class="input-field"
                       formControlName="columnName"
+                      (click)="EditCellforcolumn(indexOfelement)"
                     />
                     <input
                       *ngIf="IsMerge"
@@ -253,10 +256,12 @@
                   </form>
                 </div>
               </th>
-            </tr>
+            </tr> -->
+            </thead>
+            <tbody>
             <tr *ngFor="let item of tableFormforrow.controls; let i = index">
-              <td
-                *ngFor="let ritem of item.controls; let index = index"
+              <td 
+                *ngFor="let ritem of item.controls.columns.controls; let index = index"
                 (mouseenter)="onCellMouseEnter($event, i, index)"
                 [pTooltip]="tooltipText.join(', ')"
                 tooltipPosition="top"
@@ -266,15 +271,23 @@
 
                 [class.leftRightnone-border]="isMergerleftRightChecked(i,index)"
                 [class.rightnone-border]="isMergerightChecked(i,index)" [class.leftnone-border]="isMergerleftChecked(i,index)"
-                [class.disabled-cell]="isCellDisabled(i,index)">
+                [class.disabled-cell]="isCellDisabled(i,index)"
+                (mouseenter)="onCellMouseEntercolumn($event,i,index)"
+                
+                [pTooltip]="tooltipTextcolumn.join(', ')"
+                tooltipPosition="top"
+                [class.hearderrightnone-border]="isRightMergeCheckedcolumn(i,index)" [class.hearderleftnone-border]="isLeftMergeCheckedcolumn(i,index)" [class.hearderleftRightnone-border]="isRightLeftMergeCheckedcolumn(i,index)"
+                [class.green-border]="isMergeCheckedcolumn(i,index)" [class.grey-border]="isMergeCheckedcolumn(i,index)"   >
+
                 <!-- [class.red-border]="ritem.get('mergecheckbox')?.value" [class.grey-border]="ritem.get('mergecheckbox')?.value" -->
             
                 <div>
                   <form [formGroup]="ritem" role="form">
                     <input
+                    class="input-field1"
                       type="text"
                       pInputText
-                      formControlName="rowName"
+                      formControlName="colType"
                       (click)="EditCell(i, index)"
                       [class.disabled-cell]="isCellDisabled(i,index)"
                     />
@@ -283,9 +296,10 @@
                       *ngIf="IsMerge"
                       type="checkbox"
                       class="checkbox"
-                      formControlName="mergecheckbox"
+                      formControlName="checked"
                       [class.disabled-cell]="isCellDisabled(i,index)"
                     />
+                 
                   </form>
                 </div>
               </td>
@@ -318,10 +332,10 @@
                 </div>
               </td>
             </tr>
-          </thead>
+          </tbody>
         </table>
       </div>
-    </span>
+    
     <div class="row">
       <!-- <div class="col-md-2">
         <p-button
@@ -390,6 +404,7 @@
               /><label htmlFor="username" style="margin-left: 10px"
                 >Score</label
               >
+             
             </div>
             <div class="col-md-2">
               <input
@@ -402,6 +417,7 @@
               /><label htmlFor="username" style="margin-left: 10px"
                 >Factor</label
               >
+              <!-- <p-checkbox   [style]="{ 'margin-left': '10px' }" [(ngModel)]="factorValue" label="Factor"></p-checkbox> -->
             </div>
             <div class="col-md-2">
               <input
@@ -414,6 +430,8 @@
               /><label htmlFor="username" style="margin-left: 10px"
                 >Total</label
               >
+              <!-- <p-checkbox [style]="{ 'margin-left': '10px' }" [(ngModel)]="totalValue" label="Total"></p-checkbox> -->
+
             </div>
           </div>
         </div>
@@ -434,18 +452,19 @@
 <p-dialog
   header="Header"
   [(visible)]="CellStyleVisible"
-  [style]="{ width: '55vw', height: '400px' }"
+  [style]="{ width: '55vw', height: '500px' }"
 >
   <ng-template pTemplate="header">
     <strong class="text-xl font-bold">Add Cell Property</strong>
   </ng-template>
   <hr class="p-divider" />
+  <div class="popupcontainer">
   <form [formGroup]="CellformGroup">
     <div class="col-md-12">
       <div class="row">
         <div class="col-md-4">
           <label htmlFor="username">Input Type</label><br />
-          <select
+          <!-- <select
             formControlName="inputtype"
             [style]="{
               width: '200px',
@@ -457,7 +476,9 @@
             <option *ngFor="let option of options" [value]="option">
               {{ option }}
             </option>
-          </select>
+          </select> -->
+          <p-dropdown [options]="options" (onChange)="selectedoption($event)" [style]="{'width':'200px'}" formControlName="inputtype" placeholder="Select a input type"></p-dropdown>
+
         </div>
 
         <div class="col-md-3">
@@ -466,7 +487,7 @@
         </div>
         <div class="col-md-3" [style]="{ 'margin-left': '50px' }">
           <label htmlFor="username">Background color</label>
-          <input
+          <!-- <input
             *ngIf="Istext"
             type="text"
             pInputText
@@ -482,11 +503,13 @@
             formControlName="BackGroundcolour"
             [style]="{ width: '90px' }"
             #colorPicker
-          />
+          /> -->
+          <p-colorPicker formControlName="BackGroundcolour" ></p-colorPicker>
+
         </div>
         <div class="col-md-3">
           <label htmlFor="username">Font Color</label><br />
-          <input
+          <!-- <input
             *ngIf="IsFonttext"
             type="text"
             pInputText
@@ -501,7 +524,9 @@
             formControlName="Fontcolour"
             [style]="{ width: '90px' }"
             #colorPicker
-          />
+          /> -->
+          <p-colorPicker formControlName="Fontcolour" ></p-colorPicker>
+
         </div>
         <div
           class="col-md-3"
@@ -544,7 +569,7 @@
       </div>
     </div>
   </form>
-
+</div>
   <ng-template pTemplate="footer">
     <hr class="p-divider" />
     <p-button
@@ -559,16 +584,111 @@
 <p-dialog
   header="Header"
   [(visible)]="RowStyleVisible"
-  [style]="{ width: '55vw', height: '400px' }"
+  [style]="{ width: '55vw', height: '450px' }"
 >
   <ng-template pTemplate="header">
     <strong class="text-xl font-bold">Add Row Property</strong>
   </ng-template>
   <hr class="p-divider" />
+  <div class="popupcontainer">
   <form [formGroup]="RowformGroup">
     <div class="col-md-12">
       <div class="row">
         <div class="col-md-3">
+          <label htmlFor="username">Font Size</label>
+          <p-inputNumber inputId="integeronly" formControlName="Fontsize">
+          </p-inputNumber>
+        </div>
+        <div class="col-md-4" style="margin-left: 50px">
+          <label htmlFor="username">Text Case</label><br />
+          <p-dropdown [options]="textcaseoption" [style]="{'width':'200px'}"  formControlName="textTransform" placeholder="Select a text case"></p-dropdown>
+
+        </div>
+        <div class="col-md-3">
+          <label htmlFor="username">Font Weight</label><br />
+          <p-dropdown [options]="Fontweightoption" [style]="{'width':'200px'}" formControlName="Fontweight" placeholder="Select a Font weight"></p-dropdown>
+        </div>
+        <div class="col-md-2">
+          <label htmlFor="username">Font Style</label><br />
+          <p-dropdown [options]="Fontstyleoption" [style]="{'width':'200px'}" formControlName="Fontstyle" placeholder="Select a Font style"></p-dropdown>
+
+        </div>
+        <div class="col-md-3" [style]="{ 'margin-left': '115px' }">
+          <label htmlFor="username" [style]="{'margin-bottom': '4px'}">Background color</label>
+          <!-- <input
+            *ngIf="IsRowtext"
+            type="text"
+            pInputText
+            [value]="RowselectedColor"
+            (click)="changeRowbackgroundcolor()"
+            formControlName="RowBackGroundcolour"
+          />
+
+          <input
+            *ngIf="IsRowcolor"
+            type="color"
+            (input)="updateRowColor($event)"
+            formControlName="RowBackGroundcolour"
+            [style]="{ width: '90px' }"
+            #colorPicker
+          /> -->
+          <p-colorPicker formControlName="RowBackGroundcolour" [ngStyle]="{'margin-left': '15px'}"></p-colorPicker>
+        </div>
+        <div class="col-md-3" [style]="{ 'margin-left': '70px' }">
+          <label htmlFor="username">Font Color</label><br />
+          <!-- <input
+            *ngIf="IsRowFonttext"
+            type="text"
+            pInputText
+            [value]="selectedRowFontColor"
+            (click)="changeRowFontcolor()"
+            formControlName="RowFontcolour"
+          />
+          <input
+            *ngIf="IsRowFontcolor"
+            type="color"
+            (input)="updateRowFontColor($event)"
+            formControlName="RowFontcolour"
+            [style]="{ width: '90px' }"
+            #colorPicker
+          /> -->
+
+          <p-colorPicker formControlName="RowFontcolour" ></p-colorPicker>
+
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+  <ng-template pTemplate="footer">
+    <hr class="p-divider" />
+    <p-button
+      (click)="saveRowStyle()"
+      label="save"
+      styleClass="p-button-te
+      xt"
+    ></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  header="Header"
+  [(visible)]="columncellStyleVisible"
+  [style]="{ width: '55vw', height: '400px' }"
+>
+  <ng-template pTemplate="header">
+    <strong class="text-xl font-bold">Add Cell Property</strong>
+  </ng-template>
+  <hr class="p-divider" />
+  <div class="popupcontainer">
+  <form [formGroup]="columncellformGroup">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-3">
+          <label htmlFor="username">Label</label>
+          <input  pInputText formControlName="cellvalue" />
+        </div>
+        <div class="col-md-3" style="margin-left:50px">
           <label htmlFor="username">Font Size</label>
           <p-inputNumber inputId="integeronly" formControlName="Fontsize">
           </p-inputNumber>
@@ -604,7 +724,7 @@
             </option>
           </select>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-2" style="margin-left:50px">
           <label htmlFor="username">Font Style</label><br />
           <select
             formControlName="Fontstyle"
@@ -622,38 +742,38 @@
         <div class="col-md-3" [style]="{ 'margin-left': '108px' }">
           <label htmlFor="username">Background color</label>
           <input
-            *ngIf="IsRowtext"
+            *ngIf="Iscolumncellbtext"
             type="text"
             pInputText
-            [value]="RowselectedColor"
-            (click)="changeRowbackgroundcolor()"
-            formControlName="RowBackGroundcolour"
+            [value]="columncellselectedColor"
+            (click)="changecolumncellbackgroundcolor()"
+            formControlName="BackGroundcolour"
           />
 
           <input
-            *ngIf="IsRowcolor"
+            *ngIf="Iscolumncellbcolor"
             type="color"
-            (input)="updateRowColor($event)"
-            formControlName="RowBackGroundcolour"
+            (input)="updatecolumncellColor($event)"
+            formControlName="BackGroundcolour"
             [style]="{ width: '90px' }"
             #colorPicker
           />
         </div>
-        <div class="col-md-3" [style]="{ 'margin-left': '60px' }">
+        <div class="col-md-3" >
           <label htmlFor="username">Font Color</label><br />
           <input
-            *ngIf="IsRowFonttext"
+            *ngIf="IscolumncellFonttext"
             type="text"
             pInputText
-            [value]="selectedRowFontColor"
-            (click)="changeRowFontcolor()"
-            formControlName="RowFontcolour"
+            [value]="selectedcolumncellFontColor"
+            (click)="changecolumncellFontcolor()"
+            formControlName="Fontcolour"
           />
           <input
-            *ngIf="IsRowFontcolor"
+            *ngIf="IscolumncellFontcolor"
             type="color"
-            (input)="updateRowFontColor($event)"
-            formControlName="RowFontcolour"
+            (input)="updatecolumncellFontColor($event)"
+            formControlName="Fontcolour"
             [style]="{ width: '90px' }"
             #colorPicker
           />
@@ -661,11 +781,11 @@
       </div>
     </div>
   </form>
-
+</div>
   <ng-template pTemplate="footer">
     <hr class="p-divider" />
     <p-button
-      (click)="saveRowStyle()"
+      (click)="savecolumncellStyle()"
       label="save"
       styleClass="p-button-te
       xt"

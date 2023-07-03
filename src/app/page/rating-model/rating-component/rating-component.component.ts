@@ -1,8 +1,10 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { typePropertyIsNotAllowedMsg } from '@ngrx/store/src/models';
 import { MessageService } from 'primeng/api';
 import { tabsService } from 'src/app/services/tabs.service';
+import { SelectItem } from 'primeng/api';
 
 interface City {
   name: string;
@@ -54,7 +56,9 @@ export class RatingComponentComponent implements OnInit {
   tData: any = [];
   selectedColor: string = '';
   RowselectedColor: string = '';
+  columncellselectedColor:string='';
   selectedRowFontColor: string = '';
+  selectedcolumncellFontColor:string='';
   IsFontcolor: boolean = false;
   IsFonttext: boolean = true;
   selectedFontColor: string = '';
@@ -106,11 +110,20 @@ export class RatingComponentComponent implements OnInit {
   IsCheckboxadd: boolean = true;
   IsLabel: boolean = true;
   CellformGroup: any;
+  cellcolumnindex:any
   updaterowcolspandata: any = [];
   RowformGroup: any;
+  columncellStyleVisible:boolean=false
+  columncellformGroup:any
+  IscolumncellFontcolor:boolean = false;
+  IscolumncellFonttext:boolean = true;
+  Iscolumncellbcolor:boolean = false;
+  Iscolumncellbtext:boolean = true;
   copyRowTableValue:any=[]
+  copycolumncelltable:any=[]
   tooltipText: string[] = [];
   tooltipTextcolumn:string[] = [];
+  
   constructor(
     private messageService: MessageService,
     private formBuilder: FormBuilder,
@@ -118,11 +131,14 @@ export class RatingComponentComponent implements OnInit {
     private router: Router,
     private tabService: tabsService,
     private fb: FormBuilder
-  ) {}
+  ) {
+  
+  }
   ngOnInit(): void {
     this.tabService.gettabs().subscribe((res) => {
       this.files = res;
     });
+   
     this.tableForm = this.fb.array([]);
     this.tableFormforrow = this.fb.array([]);
     this.FormArray1 = this.fb.array([]);
@@ -140,6 +156,16 @@ export class RatingComponentComponent implements OnInit {
       Fontstyle: [''],
       RowBackGroundcolour: [''],
       RowFontcolour: [''],
+    });
+
+    this.columncellformGroup = this.fb.group({
+      cellvalue:[''],
+      Fontsize: [''],
+      textTransform: [''],
+      Fontweight: [''],
+      Fontstyle: [''],
+      BackGroundcolour: [''],
+      Fontcolour: [''],
     });
     //this.CellformGroup = new FormGroup({});
     //this.CellStyleformArray = this.fb.array([]);
@@ -231,54 +257,47 @@ export class RatingComponentComponent implements OnInit {
       this.containerValue = 'table';
       this.tableName = rowData.name;
       this.containerVisible = true;
-      this.Noofcolumns = rowData.tabledata.length;
-      this.Noofrows = rowData.rowdata.length;
-      (this.scoreValue = rowData.scoreValue),
-        (this.factorValue = rowData.factorValue),
-        (this.totalValue = rowData.totalValue),
-        (this.containerData = rowNode.node);
+      console.log("rowdata",rowData)
+console.log("roen",rowNode)
+
+      this.Noofcolumns = rowData.column
+      const rowvalue=rowData.data.length
+      this.Noofrows =rowvalue; 
+      this.scoreValue = rowData.score;
+        this.factorValue = rowData.factor;
+        this.totalValue = rowData.total;
+        this.containerData = rowNode.node
       this.tablerowNode = rowNode.node;
       this.tableForm = this.fb.array([]);
-      for (let i = 0; i < this.Noofcolumns; i++) {
-        // this.dynamicColumns.push(i);
-        const rangeArray = this.tableForm as FormArray;
-        const formGroup = new FormGroup({});
-        if (rowData.mergecol !== null) {
-          this.IsMerge = true;
-          formGroup.addControl(
-            'mergecheckbox',
-            new FormControl( rowData.tabledata[i].mergecheckbox)
-          );
-          this.newmergecolumnlist = rowData.mergecol;
-        } else {
-          this.IsMerge = false;
-          formGroup.addControl('mergecheckbox', new FormControl(''));
-        }
-        formGroup.addControl(
-          'columnName',
-          new FormControl(rowData.tabledata[i].columnName)
-        );
-        rangeArray.push(formGroup);
-      }
-      
       this.tableFormforrow = this.fb.array([]);
-     
 
       for (let i = 0; i < this.Noofrows; i++) {
         this.FormArray1 = this.fb.array([]);
         for (let j = 0; j < this.Noofcolumns; j++) {
           const formGroup = new FormGroup({
-            rowName: new FormControl(
-              rowData.rowdata[i][j].cellstyledata.inputtype
-            ),
-            mergecheckbox: new FormControl(rowData.rowdata[i][j].mergecheckbox),
+            id:new FormControl(rowData.data[i].columns[j].id) ,
+            title: new FormControl(rowData.data[i].columns[j].title) ,
+            value: new FormControl(rowData.data[i].columns[j].value) ,
+            colType: new FormControl(rowData.data[i].columns[j].colType) ,
+            colSpan: new FormControl(rowData.data[i].columns[j].colSpan) ,
+            textColor: new FormControl(rowData.data[i].columns[j].textColor),
+            bgColor: new FormControl(rowData.data[i].columns[j].bgColor),
+            checked: new FormControl(rowData.data[i].columns[j].checked),
+            fontSize: new FormControl(rowData.data[i].columns[j].fontSize),
+            checkboxvalid:this.fb.array(rowData.data[i].columns[j].checkboxvalid)
           });
+          const checkboxValidArray = formGroup.get('checkboxvalid') as FormArray;
+          checkboxValidArray.setValue(rowData.data[i].columns[j].checkboxvalid);
           //formGroup.addControl('rowName', new FormControl(''));
           this.FormArray1.push(formGroup);
         }
-        this.tableFormforrow .push(this.FormArray1);
+        const formGroup = new FormGroup({
+          id:new FormControl(rowData.data[i].id),
+          property: new FormControl(rowData.data[i].property),
+          columns:this.FormArray1,
+        });
+        this.tableFormforrow.push(formGroup);
       }
-   
     } else {
       this.tabTitle = '';
       this.tabName = rowData.name;
@@ -329,9 +348,10 @@ export class RatingComponentComponent implements OnInit {
     }
     console.log('colmerindex',this.columnMergedIndex)
   }
-  onCellMouseEntercolumn(event: MouseEvent, i: number){
-   
+  onCellMouseEntercolumn(event: MouseEvent, row:any,i: number){
+   if(row===0){
     this.tooltipTextcolumn=[]
+
     if( this.tablerowNode.data.hasOwnProperty('mergecol')){
     this.tablerowNode.data.mergecol.forEach((element:any)=> {
       element.columnindex.forEach((ele:any) => {
@@ -361,6 +381,7 @@ export class RatingComponentComponent implements OnInit {
             });
                 });
         }
+      }
   }
 
   // checkmergecolumn(rowNode:any){
@@ -405,19 +426,26 @@ export class RatingComponentComponent implements OnInit {
       } else if (rowData.type === 'table') {
         let data = {
           data: {
-            name: rowData.name,
-            size: rowData.size,
+           
+            refId:rowData.refId,
+            title: rowData.title,
             type: 'table',
-            hide: rowData.hide,
-            rowdata: rowData.rowdata,
-            tabledata: rowData.tabledata,
-            id: rownode.node.parent.children.length + 1,
+            hide:  rowData.hide,
+            data:rowData.data,
             mergecol: rowData.mergecol,
-            scoreValue: this.scoreValue,
-            factorValue: this.factorValue,
-            totalValue: this.totalValue,
+            mergecolumnrow:rowData.mergecolumnrow,
+            column:rowData.column,
+            row:rowData.row,
+            score: rowData.score,
+            factor: rowData.factor,
+            total:  rowData.total,
+            id: rownode.node.parent.children.length + 1,
+            template: null,
+            alias: null,
           },
         };
+
+       
         rownode.node.parent.children.push(data);
       }
     }
@@ -617,95 +645,20 @@ export class RatingComponentComponent implements OnInit {
       }
     } else {
       if (this.containerTitle == 'Edit table') {
-        // const filteredData = this.tableForm.value.filter(
-        //   (item: any) => item.mergecheckbox === true
-        // );
-
-        const jsonString: string | null = localStorage.getItem('datasource'); // Replace with your method to obtain the JSON string
-
-        if (jsonString !== null) {
-          const parsedObject = JSON.parse(jsonString, (key, value) => {
-            if (key === 'parent') {
-              // Handle circular reference
-              return value; // Return the reference to the parent object
-            }
-            return value;
-          });
-          parsedObject.forEach((element: any) => {
-            if (element.data.id === this.tablerowNode.parent.data.id) {
-              element.children.forEach((ele: any) => {
-                if (ele.data.id === this.tablerowNode.data.id) {
-                  if (this.updatedDatanew.length === 0) {
-                    ele.data.mergecol.forEach((e1: any) => {
-                      this.updatedDatanew.push(e1);
-                    });
-                  }
-                  if (this.updaterowcolspandata.length === 0) {
-                    this.tablerowNode.data.mergecolumnrow.forEach((e1: any) => {
-                      this.updaterowcolspandata.push(e1);
-                    });
-                  }
-                }
-              });
-            }
-          });
-        }
-
-        const tablecol = this.tableForm.value;
         const rowsdata = this.tableFormforrow.value;
-        for (let i = 0; i < rowsdata.length; i++) {
-          for (let j = 0; j < rowsdata[i].length; j++) {
-            if (!rowsdata[i][j].hasOwnProperty('cellstyledata')) {
-              if(this.tablerowNode.data.rowdata[i][j].length!==0){
-              rowsdata[i][j]['cellstyledata'] =
-                this.tablerowNode.data.rowdata[i][j].cellstyledata;
-              }else{
-                rowsdata[i][j]['cellstyledata'] =
-                this.CellformGroup.value
-              }
-            }
-            if (!rowsdata[i][j].hasOwnProperty('rowstyledata')) {
-              if(this.tablerowNode.data.rowdata[i].length!==0){
-                rowsdata[i][j]['rowstyledata'] =
-                this.tablerowNode.data.rowdata[i][j].rowstyledata;
-              }else{
-                rowsdata[i][j]['rowstyledata'] = this.RowformGroup.value;
-              }
-             
-            }
-          }
-        }
+
 
         console.log('rownode', this.tablerowNode);
 
-        // const mergecheckboxCount = filteredData.length;
-
-        // let updatedData;
-        // if (filteredData.length > 0) {
-        //   const mergedNames = filteredData
-        //     .map((item: any) => item.columnName)
-        //     .join(' ');
-        //   updatedData = [
-        //     {
-        //       mergecheckbox: '',
-        //       mergecheckboxCount: mergecheckboxCount,
-        //       columnName: mergedNames,
-        //     },
-        //     ...this.tableForm.value.slice(mergecheckboxCount),
-        //   ];
-        // } else {
-        //   updatedData = null;
-        // }
         this.containerData.data.name = this.tableName;
-        this.containerData.data.Noofcolumns = this.Noofcolumns;
-        this.containerData.data.Noofrows = this.Noofrows;
-        this.containerData.data.tabledata = tablecol;
         this.containerData.data.mergecol = this.updatedDatanew;
-        this.containerData.data.rowdata = rowsdata;
+        this.containerData.data.row = this.Noofrows;
+        this.containerData.data.column = this.Noofcolumns;
+        this.containerData.data.data = rowsdata;
         this.containerData.data.mergecolumnrow=this.updaterowcolspandata;
-        (this.containerData.data.scoreValue = this.scoreValue),
-          (this.containerData.data.factorValue = this.factorValue),
-          (this.containerData.data.totalValue = this.totalValue),
+        this.containerData.data.score = this.scoreValue;
+          this.containerData.data.factor = this.factorValue;
+          this.containerData.data.total = this.totalValue;
           // this.containerData.children.push({
           //   data: {
           //     name: this.tableName,
@@ -723,78 +676,53 @@ export class RatingComponentComponent implements OnInit {
         this.containerData = {};
         this.containerVisible = false;
       } else {
-        // const filteredData = this.tableForm.value.filter(
-        //   (item: any) => item.mergecheckbox === true
-        // );
-        const rowsdata = this.tableFormforrow.value;
-        //const mergecheckboxCount = filteredData.length;
-        const tablecol = this.tableForm.value;
-        // let updatedData;
-        // if (filteredData.length > 0) {
-        //   const mergedNames = filteredData
-        //     .map((item: any) => item.columnName)
-        //     .join(' ');
-        //   updatedData = [
-        //     {
-        //       mergecheckbox: '',
-        //       mergecheckboxCount: mergecheckboxCount,
-        //       columnName: mergedNames,
-        //     },
-        //     ...this.tableForm.value.slice(mergecheckboxCount),
-        //   ];
-        // } else {
-        //   updatedData = null;
-        // }
-        
       
+        const rowsdata = this.tableFormforrow.value;
 
-        for (let i = 0; i < rowsdata.length; i++) {
-          for (let j = 0; j < rowsdata[i].length; j++) {
-            if (!rowsdata[i][j].hasOwnProperty('rowstyledata')) {
-              if(this.copyRowTableValue.length!==0){
-                if(this.copyRowTableValue[i][j].hasOwnProperty('rowstyledata')){
-                  rowsdata[i][j]['rowstyledata']=this.copyRowTableValue[i][j].rowstyledata
-                }else{
-                  rowsdata[i][j]['rowstyledata'] = this.RowformGroup.value;
-                }
-               
-              }else{
-              rowsdata[i][j]['rowstyledata'] = this.RowformGroup.value;
-              }
-            }
-            if (!rowsdata[i][j].hasOwnProperty('cellstyledata')) {
-              if(this.copyRowTableValue.length!==0){
-                if(this.copyRowTableValue[i][j].hasOwnProperty('rowstyledata')){
-                  rowsdata[i][j]['cellstyledata']=this.copyRowTableValue[i][j].cellstyledata
-                }else{
-                  rowsdata[i][j]['cellstyledata'] = this.CellformGroup.value;
-                }
-               
-              }else{
-                rowsdata[i][j]['cellstyledata'] = this.CellformGroup.value;
-              }
-              
-            }
-          }
-        }
+        // this.containerData.children.push({
+        //   data: {
+        //     refId:this.tablerowNode.data.id,
+        //     title: this.tableName,
+        //     type: 'table',
+        //     hide: true,
+        //     data:rowsdata,
+        //     mergecol: this.updatedDatanew,
+        //     mergecolumnrow: this.updaterowcolspandata,
+        //     column: this.Noofcolumns,
+        //     row:this.Noofrows,
+        //     score: this.scoreValue,
+        //     factor: this.factorValue,
+        //     total: this.totalValue,
+        //     id: this.containerData.children.length + 1,
+        //     template: null,
+        //     alias: null,
+        //   },
+        // });
+   
+        
+        
 
         this.containerData.children.push({
-          data: {
-            name: this.tableName,
-            type: 'table',
-            hide: true,
-            tabledata: tablecol,
-            mergecol: this.updatedDatanew,
-            mergecolumnrow: this.updaterowcolspandata,
-            rowdata: rowsdata,
-            scoreValue: this.scoreValue,
-            factorValue: this.factorValue,
-            totalValue: this.totalValue,
-            id: this.containerData.children.length + 1,
-          },
-        });
-
-        console.log('rowdata', rowsdata);
+            data: {
+              refId:this.tablerowNode.data.id,
+              title: this.tableName,
+              type: 'table',
+              hide: true,
+              data:rowsdata,
+              mergecol: this.updatedDatanew,
+              mergecolumnrow: this.updaterowcolspandata,
+              column: this.Noofcolumns,
+              row:this.Noofrows,
+              score: this.scoreValue,
+              factor: this.factorValue,
+              total: this.totalValue,
+              id: this.containerData.children.length + 1,
+              template: null,
+              alias: null,
+            },
+          });
+  
+        console.log('container', this.containerData);
         // console.log('data form ', updatedData);
         this.tableName = '';
         this.containerData = {};
@@ -834,18 +762,18 @@ export class RatingComponentComponent implements OnInit {
     this.messageService.clear();
   }
   onChangecolumn(event: any) {
-    this.dynamicColumns = [];
-    this.IsMerge = false;
-    this.tableForm = this.fb.array([]);
-    for (let i = 1; i <= this.Noofcolumns; i++) {
-      // this.dynamicColumns.push(i);
+    // this.dynamicColumns = [];
+    // this.IsMerge = false;
+    // this.tableForm = this.fb.array([]);
+    // for (let i = 1; i <= this.Noofcolumns; i++) {
+    //   // this.dynamicColumns.push(i);
 
-      const rangeArray = this.tableForm as FormArray;
-      const formGroup = new FormGroup({});
-      formGroup.addControl('mergecheckbox', new FormControl(''));
-      formGroup.addControl('columnName', new FormControl(''));
-      rangeArray.push(formGroup);
-    }
+    //   const rangeArray = this.tableForm as FormArray;
+    //   const formGroup = new FormGroup({});
+    //   formGroup.addControl('mergecheckbox', new FormControl(''));
+    //   formGroup.addControl('columnName', new FormControl(''));
+    //   rangeArray.push(formGroup);
+    // }
   }
   onChangerow(event: any) {
     this.dynamicRows = [];
@@ -857,16 +785,72 @@ export class RatingComponentComponent implements OnInit {
       this.FormArray1 = this.fb.array([]);
       for (let j = 1; j <= this.Noofcolumns; j++) {
         const formGroup = new FormGroup({
-          rowName: new FormControl(''),
-          mergecheckbox: new FormControl(false),
+          id:new FormControl(j) ,
+          title: new FormControl('') ,
+          value: new FormControl('') ,
+          colType: new FormControl('') ,
+          colSpan: new FormControl('') ,
+          textColor: new FormControl(''),
+          bgColor: new FormControl(''),
+          checked: new FormControl(false),
+          fontSize: new FormControl(''),
+          checkboxvalid:this.fb.array([])
         });
         //formGroup.addControl('rowName', new FormControl(''));
         this.FormArray1.push(formGroup);
       }
-      this.tableFormforrow.push(this.FormArray1);
+      const formGroup = new FormGroup({
+        id:new FormControl(i),
+        property: new FormControl(''),
+        columns:this.FormArray1,
+      });
+      this.tableFormforrow.push(formGroup);
     }
     console.log('array', this.tableFormforrow);
   }
+
+  savecolumncellStyle(){
+    if (this.columncellformGroup.value.Fontsize !== null) {
+      this.columncellformGroup.value.Fontsize =
+        this.columncellformGroup.value.Fontsize + 'px';
+    }
+    const nestedArray = this.tableForm as FormArray;  
+    const formGroup = nestedArray.at(this.cellcolumnindex) as FormGroup;
+    const columnNameControl = formGroup.get('columnName') as FormControl;
+    columnNameControl.patchValue(this.columncellformGroup.value.cellvalue);
+      this.tableForm.value[this.cellcolumnindex]['columncellstyledata'] = this.columncellformGroup.value;
+    this.columncellStyleVisible = false;
+    this.columncellformGroup.reset();
+    
+   
+  }
+
+  EditCellforcolumn(i:any){
+  this.cellcolumnindex=i
+  this.columncellStyleVisible=true
+
+  this.columncellformGroup.reset();
+  this.IscolumncellFontcolor = false;
+  this.IscolumncellFonttext = true;
+  this.Iscolumncellbcolor = false;
+  this.Iscolumncellbtext = true;
+
+  if (this.tablerowNode.data.hasOwnProperty('tabledata')) {
+    if (this.tablerowNode.data.tabledata[i].hasOwnProperty('columncellstyledata')) {
+    const Fsize =this.tablerowNode.data.tabledata[this.cellcolumnindex].columncellstyledata.Fontsize;
+    let removedString = Fsize.replace(/[px]/g, '');
+    this.columncellformGroup.get('Fontsize').setValue(removedString);
+    this.columncellformGroup.get('cellvalue').setValue( this.tablerowNode.data.tabledata[this.cellcolumnindex].columncellstyledata.cellvalue);
+    this.columncellformGroup.get('Fontweight').setValue( this.tablerowNode.data.tabledata[this.cellcolumnindex].columncellstyledata.Fontweight);
+    this.columncellformGroup.get('textTransform').setValue(this.tablerowNode.data.tabledata[this.cellcolumnindex].columncellstyledata.textTransform);
+    this.columncellformGroup.get('Fontstyle').setValue(this.tablerowNode.data.tabledata[this.cellcolumnindex].columncellstyledata.Fontstyle);
+    this.columncellformGroup.get('BackGroundcolour').setValue( this.tablerowNode.data.tabledata[this.cellcolumnindex].columncellstyledata.BackGroundcolour );
+    this.columncellformGroup.get('Fontcolour').setValue(this.tablerowNode.data.tabledata[this.cellcolumnindex].columncellstyledata.Fontcolour
+    );
+  }
+}
+  }
+
   EditCell(i: any, j: any) {
     this.clearFormArray();
     this.CellformGroup.reset();
@@ -880,38 +864,37 @@ export class RatingComponentComponent implements OnInit {
     this.IsFonttext = true;
     this.Iscolor = false;
     this.Istext = true;
-    if (this.tablerowNode.data.hasOwnProperty('rowdata')) {
-      if (this.tablerowNode.data.rowdata[i].length!==0){
+    console.log("tablero",this.tablerowNode.data)
+    if (this.tablerowNode.data.hasOwnProperty('data')) {
+      if (this.tablerowNode.data.data[i].length!==0){
       if (
-        this.tablerowNode.data.rowdata[i][j].cellstyledata.inputtype ===
+        this.tablerowNode.data.data[i].columns[j].colType ===
           'checkbox' ||
-        this.tablerowNode.data.rowdata[i][j].cellstyledata.inputtype ===
+        this.tablerowNode.data.data[i].columns[j].colType ===
           'radio' ||
-        this.tablerowNode.data.rowdata[i][j].cellstyledata.inputtype ===
+        this.tablerowNode.data.data[i].columns[j].colType===
           'dropdown'
       ) {
-        // this.CellformGroup.get('rowNameValue').setValue(this.tablerowNode.data.rowdata[i][j].cellstyledata.rowNameValue);
+        // this.CellformGroup.get('rowNameValue').setValue(this.tablerowNode.data.data[i].columns[j].title);
         this.IsLabel = false;
         this.IsCheckbox = true;
         this.IsCheckboxadd = true;
         this.CellformGroup.get('inputtype').setValue(
-          this.tablerowNode.data.rowdata[i][j].cellstyledata.inputtype
+          this.tablerowNode.data.data[i].columns[j].colType
         );
         this.CellformGroup.get('BackGroundcolour').setValue(
-          this.tablerowNode.data.rowdata[i][j].cellstyledata.BackGroundcolour
+          this.tablerowNode.data.data[i].columns[j].bgColor
         );
         this.CellformGroup.get('Fontcolour').setValue(
-          this.tablerowNode.data.rowdata[i][j].cellstyledata.Fontcolour
+          this.tablerowNode.data.data[i].columns[j].textColor
         );
         //this.CellformGroup.get('Inputcheckbox').setValue(this.tablerowNode.data.rowdata[i][j].cellstyledata.Inputcheckbox);
         var checkboxvaliddata: any = [];
         if (
-          this.tablerowNode.data.rowdata[i][j].cellstyledata.checkboxvalid
+          this.tablerowNode.data.data[i].columns[j].checkboxvalid
             .length != ''
         ) {
-          this.tablerowNode.data.rowdata[i][
-            j
-          ].cellstyledata.checkboxvalid.forEach((ele: any) => {
+          this.tablerowNode.data.data[i].columns[j].checkboxvalid.forEach((ele: any) => {
             checkboxvaliddata.push({
               Label: ele.Label,
             });
@@ -924,16 +907,16 @@ export class RatingComponentComponent implements OnInit {
         this.IsCheckbox = false;
         this.IsCheckboxadd = false;
         this.CellformGroup.get('rowNameValue').setValue(
-          this.tablerowNode.data.rowdata[i][j].cellstyledata.rowNameValue
+          this.tablerowNode.data.data[i].columns[j].title
         );
         this.CellformGroup.get('inputtype').setValue(
-          this.tablerowNode.data.rowdata[i][j].cellstyledata.inputtype
+          this.tablerowNode.data.data[i].columns[j].colType
         );
         this.CellformGroup.get('BackGroundcolour').setValue(
-          this.tablerowNode.data.rowdata[i][j].cellstyledata.BackGroundcolour
+          this.tablerowNode.data.data[i].columns[j].bgColor
         );
         this.CellformGroup.get('Fontcolour').setValue(
-          this.tablerowNode.data.rowdata[i][j].cellstyledata.Fontcolour
+          this.tablerowNode.data.data[i].columns[j].textColor
         );
       }
     }
@@ -950,51 +933,44 @@ export class RatingComponentComponent implements OnInit {
     this.IsRowcolor = false;
     this.IsRowtext = true;
 
-    if (this.tablerowNode.data.hasOwnProperty('rowdata')) {
+    if (this.tablerowNode.data.hasOwnProperty('data')) {
+      if(this.tablerowNode.data.data[this.rowindex].property!==""){
       const Fsize =
-        this.tablerowNode.data.rowdata[this.rowindex][this.colindex - 1]
-          .rowstyledata.Fontsize;
+        this.tablerowNode.data.data[this.rowindex].property.Fontsize;
       let removedString = Fsize.replace(/[px]/g, '');
       this.RowformGroup.get('Fontsize').setValue(removedString);
       this.RowformGroup.get('Fontweight').setValue(
-        this.tablerowNode.data.rowdata[this.rowindex][this.colindex - 1]
-          .rowstyledata.Fontweight
+        this.tablerowNode.data.data[this.rowindex].property.Fontweight
       );
       this.RowformGroup.get('textTransform').setValue(
-        this.tablerowNode.data.rowdata[this.rowindex][this.colindex - 1]
-          .rowstyledata.textTransform
+        this.tablerowNode.data.data[this.rowindex].property.textTransform
       );
       this.RowformGroup.get('Fontstyle').setValue(
-        this.tablerowNode.data.rowdata[this.rowindex][this.colindex - 1]
-          .rowstyledata.Fontstyle
+        this.tablerowNode.data.data[this.rowindex].property.Fontstyle
       );
 
       this.RowformGroup.get('RowBackGroundcolour').setValue(
-        this.tablerowNode.data.rowdata[this.rowindex][this.colindex - 1]
-          .rowstyledata.RowBackGroundcolour
+        this.tablerowNode.data.data[this.rowindex].property.RowBackGroundcolour
       );
 
       this.RowformGroup.get('RowFontcolour').setValue(
-        this.tablerowNode.data.rowdata[this.rowindex][this.colindex - 1]
-          .rowstyledata.RowFontcolour
+        this.tablerowNode.data.data[this.rowindex].property.RowFontcolour
       );
     }
   }
+}
 
   saveRowStyle() {
     if (this.RowformGroup.value.Fontsize !== null) {
       this.RowformGroup.value.Fontsize =
         this.RowformGroup.value.Fontsize + 'px';
     }
-    for (var i = 0; i < this.colindex; i++) {
-    //   var obj: any = {};
-    // obj['outervar'] = this.rowindex;
-    // obj['innervar'] = i;
-    // obj['rowstyledata'] = this.RowformGroup.value;
-    // this.RowstyleformArray.push(obj)
-      this.tableFormforrow.value[this.rowindex][i]['rowstyledata'] = this.RowformGroup.value;
-        
-    }
+
+    const nestedArray1 = this.tableFormforrow as FormArray;
+    const nestedgroup = nestedArray1.at(this.rowindex) as FormGroup;
+    const propertygroup = nestedgroup.get('property') as FormGroup;
+
+    propertygroup.patchValue(this.RowformGroup.value);
 
     this.RowStyleVisible = false;
     this.RowformGroup.reset();
@@ -1042,60 +1018,42 @@ export class RatingComponentComponent implements OnInit {
 
 }
   mergecolumn() { 
-    console.log("rownode",this.tablerowNode)
-    if(this.copyRowTableValue.length === 0){
-     // this.copyRowTableValue=this.tableFormforrow.value
-if(this.tablerowNode.data.hasOwnProperty('rowdata')){
-     this.tableFormforrow.value.forEach((r:any,i:any)=>{
-      r.forEach((row:any,j:any)=>{
-         if(!row.hasOwnProperty('cellstyledata')){
-	           row['cellstyledata']=
-		   this.tablerowNode.data.rowdata[i][j].cellstyledata;
-	  row['rowstyledata']=
-	  this.tablerowNode.data.rowdata[i][j].rowstyledata;
-         }
-      });
-    });
-    this.copyRowTableValue=this.tableFormforrow.value;
-    if(this.tablerowNode.data.mergecolumnrow.length!==0){
-      this.updaterowcolspandata=this.tablerowNode.data.mergecolumnrow;
-    }
-  }else{
-    this.copyRowTableValue=this.tableFormforrow.value;
-  }
-    }else{
-      this.tableFormforrow.value.forEach((r:any,i:any)=>{
-        r.forEach((row:any,j:any)=>{
-          
-            this.copyRowTableValue[i][j].mergecheckbox=row.mergecheckbox;
-            this.copyRowTableValue[i][j].rowName=row.rowName;
-          
-        
-        });
-      });
-    }
-    console.log('rowform', this.tableFormforrow);
-    if (this.IsMerge === true) {
-      const filteredData = this.tableForm.value.filter(
-        (item: any) => item.mergecheckbox === true
-      );
+    console.log("rownodemerge",this.tablerowNode)
+    console.log("tablerow1",this.tableFormforrow.value)
+     if (this.IsMerge === true) {
+      console.log("tablerow2",this.tableFormforrow.value)
       let filteredData1: any = [];
       let newarrayofmerge: any = [];
-      var newdata = this.copyRowTableValue;
-      console.log('this.copyRowTableValue', this.copyRowTableValue);
+      let filteredData: any = [];
+      let newarrayofmergecol: any = [];
+      var newdata = this.tableFormforrow.value
       let arrayoftable: any = [];
-      for (var k = 0; k < newdata.length; k++) {
-        for (var l = 0; l < newdata[k].length; l++) {
-          if (newdata[k][l].mergecheckbox === true) {
+      let arrayoftableheading:any=[];
+      newdata.forEach((element:any,i:number) => {
+        if(i!==0){
+        element.columns.forEach((ele:any,j:number)=> {
+          if(ele.checked===true){
             const newObject: any = {};
-            newObject['row'] = k;
-            newObject['column'] = l;
-            newObject['data'] = newdata[k][l];
+            newObject['row'] = i;
+            newObject['column'] = j;
+            newObject['data'] = ele;
             arrayoftable.push(newObject);
-            // filteredData1.push(newdata[k][l]);
-          }
-        }
+          }     
+        });
       }
+      else{
+        element.columns.forEach((ele:any,j:number)=> {
+          if(ele.checked===true){
+            const newObject: any = {};
+            newObject['row'] = i;
+            newObject['column'] = j;
+            newObject['data'] = ele;
+            arrayoftableheading.push(newObject);
+          }     
+        });
+      }
+      });
+     
       let newupdatearray: any = [];
       if (this.updaterowcolspandata.length > 0) {
         this.updaterowcolspandata.forEach((row: any) => {
@@ -1108,23 +1066,18 @@ if(this.tablerowNode.data.hasOwnProperty('rowdata')){
 
       for (let i = 0; i < arrayoftable.length; i++) {
         const tableElement = arrayoftable[i];
-
         for (let j = 0; j < newupdatearray.length; j++) {
           const updateElement = newupdatearray[j];
-
           if (
             tableElement.row === updateElement.row &&
             tableElement.column === updateElement.column
           ) {
             sameElements.push(tableElement);
             arrayoftable.splice(i, 1);
-            i--; // Adjust the index after the removal
-
-            // Remove the matched element from newupdatearray
+            i--; 
             newupdatearray.splice(j, 1);
-            j--; // Adjust the index after the removal
-
-            break; // Exit the inner loop once a match is found
+            j--; 
+            break; 
           }
         }
       }
@@ -1132,37 +1085,58 @@ if(this.tablerowNode.data.hasOwnProperty('rowdata')){
         filteredData1.push(element.data);
         newarrayofmerge.push(element);
       });
-console.log(this.tableForm.value)
 
-let colarraynewupdate: any = [];
-if (this.updatedDatanew.length > 0) {
-  this.updatedDatanew.forEach((row: any) => {
-    row.columnindex.forEach((ele: any) => {
-      colarraynewupdate.push(ele);
-    });
-  });
-}
-      if (this.columnMergedIndex.length !== 0) {
-      
-        const mergecheckboxCount = filteredData.length;
+
+      let newupdatearraycol: any = [];
+      if (this.updatedDatanew.length > 0) {
+        this.updatedDatanew.forEach((row: any) => {
+          row.columnindex.forEach((ele: any) => {
+            newupdatearraycol.push(ele);
+          });
+        });
+      }
+      let sameElements2: any[] = [];
+
+      for (let i = 0; i < arrayoftableheading.length; i++) {
+        const tableElement = arrayoftableheading[i];
+        for (let j = 0; j < newupdatearraycol.length; j++) {
+          const updateElement = newupdatearraycol[j];
+          if (
+            tableElement.column === updateElement
+          ) {
+            sameElements2.push(tableElement);
+            arrayoftableheading.splice(i, 1);
+            i--; 
+            newupdatearraycol.splice(j, 1);
+            j--; 
+            break; 
+          }
+        }
+      }
+      arrayoftableheading.forEach((element: any) => {
+        filteredData.push(element);
+        newarrayofmergecol.push(element.column);
+      });
+
+      if (newarrayofmergecol.length !== 0) {
+        // var column1=this.copycolumncelltable[this.columnMergedIndex[0]].columncellstyledata;
+
+
+        const mergecheckboxCount = newarrayofmergecol.length;
         let updatedData;
         if (filteredData.length > 0) {
           updatedData = {
-            mergecheckbox: '',
-            mergecheckboxCount:this.columnMergedIndex.length,
+            mergecheckbox: true,
+            mergecheckboxCount:mergecheckboxCount,
             columnName: this.Mergecolumnname,
-            columnindex: this.columnMergedIndex,
+            columnindex: newarrayofmergecol,
+            columndata:filteredData
           };
         } else {
           updatedData = null;
         }
         this.updatedDatanew.push(updatedData);
-        this.columnMergedIndex=[]
-       
-        if (this.updatedDatanew !== null || this.updatedDatanew.length !== 0) {
-          this.newmergecolumnlist = this.updatedDatanew;
-          this.IsMergePresent = true;
-        }
+        
     
         this.messageService.add({
           severity: 'success',
@@ -1176,7 +1150,8 @@ if (this.updatedDatanew.length > 0) {
         this.IsMerge = false;
         //this.tableForm.get('mergecheckbox').setValue(false);
         this.Mergecolumnname = null;
-      } else {
+      }
+      else if(newarrayofmerge.length!==0) {
         const mergecheckboxCount = filteredData1.length;
         let sameRowValue = true;
 
@@ -1243,7 +1218,7 @@ if (this.updatedDatanew.length > 0) {
   }
 
   selectedoption(event: any) {
-    this.newinputvalue = event.target.value;
+    this.newinputvalue = event.value;
     if (
       this.newinputvalue === 'checkbox' ||
       this.newinputvalue === 'radio' ||
@@ -1258,8 +1233,10 @@ if (this.updatedDatanew.length > 0) {
     }
   }
 
-  isRightMergeCheckedcolumn(i:any):boolean{
+  isRightMergeCheckedcolumn(row:any,i:any):boolean{
+
     let checked=false
+    if(row===0){
     if( this.tablerowNode.data.hasOwnProperty('mergecol')){
      
       this.tablerowNode.data.mergecol.forEach((element:any)=> {
@@ -1292,11 +1269,12 @@ if (this.updatedDatanew.length > 0) {
           else{
             checked=false
           }
+        }
           return checked
-    
       }
-  isLeftMergeCheckedcolumn(i:any):boolean{
+  isLeftMergeCheckedcolumn(row:any,i:any):boolean{
     let checked=false
+    if(row===0){
     if( this.tablerowNode.data.hasOwnProperty('mergecol')){
       this.tablerowNode.data.mergecol.forEach((element:any)=> {
         element.columnindex.forEach((ele:any,index:any) => {
@@ -1326,12 +1304,14 @@ if (this.updatedDatanew.length > 0) {
           else{
             checked=false
           }
+        }
           return checked
     
       }
 
-  isRightLeftMergeCheckedcolumn(i:any):boolean{
+  isRightLeftMergeCheckedcolumn(row:any,i:any):boolean{
     let checked=false
+    if(row===0){
     if( this.tablerowNode.data.hasOwnProperty('mergecol')){
       this.tablerowNode.data.mergecol.forEach((element:any)=> {
         element.columnindex.forEach((ele:any,index:any) => {
@@ -1361,12 +1341,14 @@ if (this.updatedDatanew.length > 0) {
           else{
             checked=false
           }
+        }
           return checked
     
       }
 
-  isMergeCheckedcolumn(i:any):boolean{
+  isMergeCheckedcolumn(row:any,i:any):boolean{
 let checked=false
+if(row===0){
 if( this.tablerowNode.data.hasOwnProperty('mergecol')){
   this.tablerowNode.data.mergecol.forEach((element:any)=> {
     element.columnindex.forEach((ele:any) => {
@@ -1388,6 +1370,7 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
       else{
         checked=false
       }
+    }
       return checked
 
   }
@@ -1742,16 +1725,55 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
     }
   }
   saveCellStyle() {
+
     const nestedArray1 = this.tableFormforrow as FormArray;
-    const nestedArray = nestedArray1.at(this.outervar) as FormArray;
-    const formGroup = nestedArray.at(this.innervar) as FormGroup;
-    const rowNameControl = formGroup.get('rowName') as FormControl;
-    rowNameControl.patchValue(this.CellformGroup.value.inputtype);
-    this.tableFormforrow.value[this.outervar][this.innervar].rowName =
-      this.CellformGroup.value.rowNameValue;
-    // this.tableFormforrow.get('rowName').setValue(this.CellformGroup.value.rowNameValue);
-    this.tableFormforrow.value[this.outervar][this.innervar]['cellstyledata'] =
-      this.CellformGroup.value;
+    const nestedgroup = nestedArray1.at(this.outervar) as FormGroup;
+    const columnsArray = nestedgroup.get('columns') as FormArray;
+    const columnIndex = this.innervar;
+    const columnFormGroup = columnsArray.at(columnIndex) as FormGroup;
+    const titleControl = columnFormGroup.get('title') as FormControl;
+    titleControl.setValue(this.CellformGroup.value.rowNameValue);
+    const valueControl = columnFormGroup.get('value') as FormControl;
+    valueControl.setValue(this.CellformGroup.value.rowNameValue);
+    const colTypecontrol = columnFormGroup.get('colType') as FormControl;
+    colTypecontrol.setValue(this.CellformGroup.value.inputtype);
+    const textColorcontrol=columnFormGroup.get('textColor') as FormControl;
+    textColorcontrol.setValue(this.CellformGroup.value.Fontcolour)
+    const bgColorcontrol=columnFormGroup.get('bgColor') as FormControl;
+    bgColorcontrol.setValue(this.CellformGroup.value.BackGroundcolour)
+
+    const nestedArray = columnFormGroup.get('checkboxvalid') as FormArray;
+    nestedArray.clear(); // Clear any existing form controls
+    
+    // Iterate over checkboxarray values and add form controls
+    const checkboxarray = this.CellformGroup.get('checkboxvalid') as FormArray;
+    checkboxarray.value.forEach((value:any) => {
+      const formControl = this.fb.control('Label');
+      nestedArray.push(formControl);
+    });
+    
+    // Now you can safely set the value of the nestedArray FormArray
+    nestedArray.setValue(checkboxarray.value);
+
+    // const nestedArray = columnFormGroup.get('checkboxvalid') as FormArray;
+    // const checkboxarray=this.CellformGroup.get('checkboxvalid') as FormArray;
+    
+    // nestedArray.setValue(checkboxarray.value);
+
+
+    // Accessing the 'title' FormControl inside the column FormGroup
+   
+    
+    // const nestedArray1 = this.tableFormforrow as FormArray;
+    // const nestedArray = nestedArray1.at(this.outervar) as FormArray;
+    // const formGroup = nestedArray.at(this.innervar) as FormGroup;
+    // const rowNameControl = formGroup.get('rowName') as FormControl;
+    // rowNameControl.patchValue(this.CellformGroup.value.inputtype);
+    // this.tableFormforrow.value[this.outervar][this.innervar].rowName =
+    //   this.CellformGroup.value.rowNameValue;
+    // // this.tableFormforrow.get('rowName').setValue(this.CellformGroup.value.rowNameValue);
+    // this.tableFormforrow.value[this.outervar][this.innervar]['cellstyledata'] =
+    //   this.CellformGroup.value;
 
     // var obj: any = {};
     // obj['outervar'] = this.outervar;
@@ -1775,6 +1797,11 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
     this.IsRowcolor = true;
     this.IsRowtext = false;
   }
+  changecolumncellbackgroundcolor(){
+    this.Iscolumncellbcolor = true;
+    this.Iscolumncellbtext = false;
+  }
+
   changeFontcolor() {
     this.IsFontcolor = true;
     this.IsFonttext = false;
@@ -1783,11 +1810,22 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
     this.IsRowFontcolor = true;
     this.IsRowFonttext = false;
   }
+
+  changecolumncellFontcolor(){
+    this.IscolumncellFontcolor = true;
+    this.IscolumncellFonttext = false;
+  }
   updateRowColor(event: Event) {
     this.IsRowcolor = false;
     this.IsRowtext = true;
     const colorInput = event.target as HTMLInputElement;
     this.RowselectedColor = colorInput.value;
+  }
+  updatecolumncellColor(event:Event){
+    this.Iscolumncellbcolor = false;
+    this.Iscolumncellbtext = true;
+    const colorInput = event.target as HTMLInputElement;
+    this.columncellselectedColor = colorInput.value;
   }
   updateColor(event: Event) {
     this.Iscolor = false;
@@ -1806,6 +1844,12 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
     this.IsRowFonttext = true;
     const colorInput = event.target as HTMLInputElement;
     this.selectedRowFontColor = colorInput.value;
+  }
+  updatecolumncellFontColor(event:Event){
+    this.IscolumncellFontcolor = false;
+    this.IscolumncellFonttext = true;
+    const colorInput = event.target as HTMLInputElement;
+    this.selectedcolumncellFontColor = colorInput.value;
   }
   removeRow(index: number): void {
     console.log("before",this.tableFormforrow)
@@ -1834,15 +1878,57 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
   
   AddRow(index:any){
     let flag:string="false"
+
+    // for (let i = 1; i <= this.Noofrows; i++) {
+    //   this.FormArray1 = this.fb.array([]);
+    //   for (let j = 1; j <= this.Noofcolumns; j++) {
+    //     const formGroup = new FormGroup({
+    //       id:new FormControl(j) ,
+    //       title: new FormControl('') ,
+    //       value: new FormControl('') ,
+    //       colType: new FormControl('') ,
+    //       colSpan: new FormControl('') ,
+    //       textColor: new FormControl(''),
+    //       bgColor: new FormControl(''),
+    //       checked: new FormControl(false),
+    //       fontSize: new FormControl(''),
+    //       checkboxvalid:this.fb.array([])
+    //     });
+    //     //formGroup.addControl('rowName', new FormControl(''));
+    //     this.FormArray1.push(formGroup);
+    //   }
+    //   const formGroup = new FormGroup({
+    //     id:new FormControl(i),
+    //     property: new FormControl(''),
+    //     columns:this.FormArray1,
+    //   });
+    //   this.tableFormforrow.push(formGroup);
+    // }
+
     this.FormArray1 = this.fb.array([]);
-    for (let j = 1; j <= this.Noofcolumns; j++) {
+      for (let j = 1; j <= this.Noofcolumns; j++) {
+        const formGroup = new FormGroup({
+          id:new FormControl(j) ,
+          title: new FormControl('') ,
+          value: new FormControl('') ,
+          colType: new FormControl('') ,
+          colSpan: new FormControl('') ,
+          textColor: new FormControl(''),
+          bgColor: new FormControl(''),
+          checked: new FormControl(false),
+          fontSize: new FormControl(''),
+          checkboxvalid:this.fb.array([])
+        });
+        //formGroup.addControl('rowName', new FormControl(''));
+        this.FormArray1.push(formGroup);
+      }
       const formGroup = new FormGroup({
-        rowName: new FormControl(''),
-        mergecheckbox:new FormControl(false)
+        id:new FormControl(index+1),
+        property: new FormControl(''),
+        columns:this.FormArray1,
       });
-      this.FormArray1.push(formGroup);
-    }
-    console.log('this  ->>>>>>',  this.tableFormforrow)
+      
+    
     let k=0
    if(this.tablerowNode.data.hasOwnProperty('mergecolumnrow')){
     this.tablerowNode.data.mergecolumnrow.forEach((element:any) => { 
@@ -1868,17 +1954,17 @@ if( this.tablerowNode.data.hasOwnProperty('mergecol')){
         this.clearNotifications();
       }, 2000);
     }else{
-      this.tableFormforrow.insert(index+1, this.FormArray1);
-      this.tablerowNode.data.rowdata.splice(index+1,0,[])
+      this.tableFormforrow.insert(index+1, formGroup);
+      this.tablerowNode.data.data.splice(index+1,0,[])
       this.Noofrows = this.Noofrows + 1;
-      console.log('this  ->>>>>>',  this.tableFormforrow);
+      
     }
   }else{
-    this.tableFormforrow.insert(index+1, this.FormArray1);
-    this.tablerowNode.data.rowdata.splice(index+1,0,[])
+    this.tableFormforrow.insert(index+1, formGroup);
+    this.tablerowNode.data.data.splice(index+1,0,[])
     this.Noofrows = this.Noofrows + 1;
   }
-   
+  console.log('this  ->>>>>>',  this.tableFormforrow);
   }
   
 }
