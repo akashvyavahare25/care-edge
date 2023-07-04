@@ -183,7 +183,7 @@
       <label htmlFor="username">Title</label>
     </span>
   </div>
-  <div *ngIf="containerValue === 'table'" [ngStyle]="{'background-color':'#ECECEC'}">
+  <div *ngIf="containerValue === 'table'" [ngStyle]="{'background-color':'#ECECEC','padding':'5px'}">
     <div class="row">
       <div class="col-md-3">
         <span class="p-float-label mt-4">
@@ -297,6 +297,7 @@
                       type="checkbox"
                       class="checkbox"
                       formControlName="checked"
+                      (change)="clickCheckbox($event,i,index)"
                       [class.disabled-cell]="isCellDisabled(i,index)"
                     />
                  
@@ -351,7 +352,7 @@
         ></p-button>
       </div> -->
 
-      <div class="col-md-2">
+      <div class="col-md-2" >
         <p-button
           (click)="mergecolumn()"
           label="Merge"
@@ -458,7 +459,7 @@
     <strong class="text-xl font-bold">Add Cell Property</strong>
   </ng-template>
   <hr class="p-divider" />
-  <div class="popupcontainer">
+  <div class="popupcontainer"  [style]="{'padding':'5px'}">
   <form [formGroup]="CellformGroup">
     <div class="col-md-12">
       <div class="row">
@@ -504,10 +505,10 @@
             [style]="{ width: '90px' }"
             #colorPicker
           /> -->
-          <p-colorPicker formControlName="BackGroundcolour" ></p-colorPicker>
+          <p-colorPicker formControlName="BackGroundcolour" [style]="{'margin-left': '14px','margin-top':'4px'}" ></p-colorPicker>
 
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3" >
           <label htmlFor="username">Font Color</label><br />
           <!-- <input
             *ngIf="IsFonttext"
@@ -590,11 +591,11 @@
     <strong class="text-xl font-bold">Add Row Property</strong>
   </ng-template>
   <hr class="p-divider" />
-  <div class="popupcontainer">
+  <div class="popupcontainer" [style]="{'padding':'5px'}">
   <form [formGroup]="RowformGroup">
     <div class="col-md-12">
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3" [style]="{'margin-left':'5px'}">
           <label htmlFor="username">Font Size</label>
           <p-inputNumber inputId="integeronly" formControlName="Fontsize">
           </p-inputNumber>
@@ -608,7 +609,7 @@
           <label htmlFor="username">Font Weight</label><br />
           <p-dropdown [options]="Fontweightoption" [style]="{'width':'200px'}" formControlName="Fontweight" placeholder="Select a Font weight"></p-dropdown>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-2" [style]="{'margin-left':'5px'}">
           <label htmlFor="username">Font Style</label><br />
           <p-dropdown [options]="Fontstyleoption" [style]="{'width':'200px'}" formControlName="Fontstyle" placeholder="Select a Font style"></p-dropdown>
 

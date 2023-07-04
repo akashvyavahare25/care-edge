@@ -21,6 +21,7 @@ interface Type {
 })
 export class RatingComponentComponent implements OnInit {
   columnMergedIndex:any=[]
+  RowMergedIndex:any=[]
   files: any = [];
   @ViewChild('colorPicker') colorPicker!: ElementRef<HTMLInputElement>;
   selectedOption2: any;
@@ -339,15 +340,9 @@ console.log("roen",rowNode)
     });
   }
   }
-  clickCheckbox(val:any,index:any){
-    console.log('indexxxxxxxx',val.target.checked,index)
-    if(val.target.checked === true){
-         this.columnMergedIndex.push(index)
-    }else{
-      this.columnMergedIndex.splice(index,1)
-    }
-    console.log('colmerindex',this.columnMergedIndex)
-  }
+ 
+
+
   onCellMouseEntercolumn(event: MouseEvent, row:any,i: number){
    if(row===0){
     this.tooltipTextcolumn=[]
@@ -428,7 +423,7 @@ console.log("roen",rowNode)
           data: {
            
             refId:rowData.refId,
-            title: rowData.title,
+            name: rowData.name,
             type: 'table',
             hide:  rowData.hide,
             data:rowData.data,
@@ -645,6 +640,36 @@ console.log("roen",rowNode)
       }
     } else {
       if (this.containerTitle == 'Edit table') {
+        
+        const jsonString: string | null = localStorage.getItem('datasource'); // Replace with your method to obtain the JSON string
+
+        if (jsonString !== null) {
+          const parsedObject = JSON.parse(jsonString, (key, value) => {
+            if (key === 'parent') {
+              // Handle circular reference
+              return value; // Return the reference to the parent object
+            }
+            return value;
+          });
+          parsedObject.forEach((element: any) => {
+            if (element.data.id === this.tablerowNode.parent.data.id) {
+              element.children.forEach((ele: any) => {
+                if (ele.data.id === this.tablerowNode.data.id) {
+                  if (this.updatedDatanew.length === 0) {
+                    ele.data.mergecol.forEach((e1: any) => {
+                      this.updatedDatanew.push(e1);
+                    });
+                  }
+                  if (this.updaterowcolspandata.length === 0) {
+                    this.tablerowNode.data.mergecolumnrow.forEach((e1: any) => {
+                      this.updaterowcolspandata.push(e1);
+                    });
+                  }
+                }
+              });
+            }
+          });
+        }
         const rowsdata = this.tableFormforrow.value;
 
 
@@ -659,17 +684,6 @@ console.log("roen",rowNode)
         this.containerData.data.score = this.scoreValue;
           this.containerData.data.factor = this.factorValue;
           this.containerData.data.total = this.totalValue;
-          // this.containerData.children.push({
-          //   data: {
-          //     name: this.tableName,
-          //     type: 'table',
-          //     hide: true,
-          //     tabledata: updatedData,
-          //     rowdata: rowsdata,
-          //     id:this.containerData.children.length+1
-          //   },
-          // });
-
           console.log('rowdata', rowsdata);
         //console.log('data form ', updatedData);
         this.tableName = '';
@@ -678,34 +692,10 @@ console.log("roen",rowNode)
       } else {
       
         const rowsdata = this.tableFormforrow.value;
-
-        // this.containerData.children.push({
-        //   data: {
-        //     refId:this.tablerowNode.data.id,
-        //     title: this.tableName,
-        //     type: 'table',
-        //     hide: true,
-        //     data:rowsdata,
-        //     mergecol: this.updatedDatanew,
-        //     mergecolumnrow: this.updaterowcolspandata,
-        //     column: this.Noofcolumns,
-        //     row:this.Noofrows,
-        //     score: this.scoreValue,
-        //     factor: this.factorValue,
-        //     total: this.totalValue,
-        //     id: this.containerData.children.length + 1,
-        //     template: null,
-        //     alias: null,
-        //   },
-        // });
-   
-        
-        
-
         this.containerData.children.push({
             data: {
               refId:this.tablerowNode.data.id,
-              title: this.tableName,
+              name: this.tableName,
               type: 'table',
               hide: true,
               data:rowsdata,
@@ -1017,6 +1007,19 @@ console.log("roen",rowNode)
     return checked;
 
 }
+
+clickCheckbox(val:any,i:any,j:any){
+  console.log('indexxxxxxxx',val.target.checked,i)
+  if(i===0){
+    if(val.target.checked === true){
+      this.columnMergedIndex.push(j)
+ }else{
+   this.columnMergedIndex.splice(j,1)
+ }
+  }
+  
+}
+
   mergecolumn() { 
     console.log("rownodemerge",this.tablerowNode)
     console.log("tablerow1",this.tableFormforrow.value)
@@ -1041,17 +1044,18 @@ console.log("roen",rowNode)
           }     
         });
       }
-      else{
-        element.columns.forEach((ele:any,j:number)=> {
-          if(ele.checked===true){
-            const newObject: any = {};
-            newObject['row'] = i;
-            newObject['column'] = j;
-            newObject['data'] = ele;
-            arrayoftableheading.push(newObject);
-          }     
-        });
-      }
+   
+      // else{
+      //   element.columns.forEach((ele:any,j:number)=> {
+      //     if(ele.checked===true){
+      //       const newObject: any = {};
+      //       newObject['row'] = i;
+      //       newObject['column'] = j;
+      //       newObject['data'] = ele;
+      //       arrayoftableheading.push(newObject);
+      //     }     
+      //   });
+      // }
       });
      
       let newupdatearray: any = [];
@@ -1087,49 +1091,58 @@ console.log("roen",rowNode)
       });
 
 
-      let newupdatearraycol: any = [];
-      if (this.updatedDatanew.length > 0) {
-        this.updatedDatanew.forEach((row: any) => {
-          row.columnindex.forEach((ele: any) => {
-            newupdatearraycol.push(ele);
-          });
-        });
-      }
-      let sameElements2: any[] = [];
+      // let newupdatearraycol: any = [];
+      // if (this.updatedDatanew.length > 0) {
+      //   this.updatedDatanew.forEach((row: any) => {
+      //     row.columnindex.forEach((ele: any) => {
+      //       newupdatearraycol.push(ele);
+      //     });
+      //   });
+      // }
+      // let sameElements2: any[] = [];
 
-      for (let i = 0; i < arrayoftableheading.length; i++) {
-        const tableElement = arrayoftableheading[i];
-        for (let j = 0; j < newupdatearraycol.length; j++) {
-          const updateElement = newupdatearraycol[j];
-          if (
-            tableElement.column === updateElement
-          ) {
-            sameElements2.push(tableElement);
-            arrayoftableheading.splice(i, 1);
-            i--; 
-            newupdatearraycol.splice(j, 1);
-            j--; 
-            break; 
+      // for (let i = 0; i < arrayoftableheading.length; i++) {
+      //   const tableElement = arrayoftableheading[i];
+      //   for (let j = 0; j < newupdatearraycol.length; j++) {
+      //     const updateElement = newupdatearraycol[j];
+      //     if (
+      //       tableElement.column === updateElement
+      //     ) {
+      //       sameElements2.push(tableElement);
+      //       arrayoftableheading.splice(i, 1);
+      //       i--; 
+      //       newupdatearraycol.splice(j, 1);
+      //       j--; 
+      //       break; 
+      //     }
+      //   }
+      // }
+      // arrayoftableheading.forEach((element: any) => {
+      //   filteredData.push(element);
+      //   newarrayofmergecol.push(element.column);
+      // });
+      
+      newdata[0].columns.forEach((element:any,j:any) => {
+        if(this.columnMergedIndex.length!==0){
+          this.columnMergedIndex.forEach((ele:any) => {
+          if(ele===j){
+            filteredData.push(element)
           }
+        });
         }
-      }
-      arrayoftableheading.forEach((element: any) => {
-        filteredData.push(element);
-        newarrayofmergecol.push(element.column);
       });
-
-      if (newarrayofmergecol.length !== 0) {
+      if (this.columnMergedIndex.length !== 0) {
         // var column1=this.copycolumncelltable[this.columnMergedIndex[0]].columncellstyledata;
 
 
-        const mergecheckboxCount = newarrayofmergecol.length;
+        const mergecheckboxCount =this.columnMergedIndex.length ;
         let updatedData;
         if (filteredData.length > 0) {
           updatedData = {
             mergecheckbox: true,
             mergecheckboxCount:mergecheckboxCount,
             columnName: this.Mergecolumnname,
-            columnindex: newarrayofmergecol,
+            columnindex: this.columnMergedIndex,
             columndata:filteredData
           };
         } else {
