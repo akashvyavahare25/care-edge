@@ -3,13 +3,13 @@
     height: 98%;
 }
 table {
-    border: 1px solid lightgray;
+    border: 1px solid #999999 !important;
     width: 100%;
     height: auto;
 
  }
  th, td {
-    border: 1px solid lightgray;
+    border: 1px solid #999999 !important;
    min-width: 200px;
     height: auto;
 
@@ -19,13 +19,24 @@ table {
   }
   .rowdata{
     height:50px;
- border-color: lightgray;
+ border-color: #999999 !important;
   }
   .datarow{
     // margin-left: 20px;
    // display: table-cell !important;
     text-align: center;
-    border-color:lightgray;}
+    border-color:#999999 !important;}
   ul {
     list-style: none;
+   
+  }
+
+  .left-position {
+    position: relative;
+    left: -30px; /* Adjust the value as needed */
+    border:solid;
+    border-color: #999999;
+    border-width: 0.2px; 
+    height:50px;
+    width:102%;
   }

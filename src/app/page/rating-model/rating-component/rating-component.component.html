@@ -453,7 +453,7 @@
 <p-dialog
   header="Header"
   [(visible)]="CellStyleVisible"
-  [style]="{ width: '55vw', height: '500px' }"
+  [style]="{ width: '55vw', height: '400px' }"
 >
   <ng-template pTemplate="header">
     <strong class="text-xl font-bold">Add Cell Property</strong>
@@ -464,7 +464,7 @@
     <div class="col-md-12">
       <div class="row">
         <div class="col-md-4">
-          <label htmlFor="username">Input Type</label><br />
+          <label htmlFor="username" class="label">Input Type</label><br />
           <!-- <select
             formControlName="inputtype"
             [style]="{
@@ -483,11 +483,11 @@
         </div>
 
         <div class="col-md-3">
-          <label *ngIf="IsLabel" htmlFor="username">Label</label>
+          <label *ngIf="IsLabel" class="label" htmlFor="username">Label</label>
           <input *ngIf="IsLabel" pInputText formControlName="rowNameValue" />
         </div>
         <div class="col-md-3" [style]="{ 'margin-left': '50px' }">
-          <label htmlFor="username">Background color</label>
+          <label htmlFor="username" class="label">Background color</label>
           <!-- <input
             *ngIf="Istext"
             type="text"
@@ -509,7 +509,7 @@
 
         </div>
         <div class="col-md-3" >
-          <label htmlFor="username">Font Color</label><br />
+          <label htmlFor="username" class="label">Font Color</label><br />
           <!-- <input
             *ngIf="IsFonttext"
             type="text"
@@ -548,7 +548,7 @@
         <div class="row">
           <div class="col-md-12">
             <div class="col-md-3" style="margin-left: 20px">
-              <label htmlFor="username">Label</label>
+              <label htmlFor="username" class="label">Label</label>
             </div>
           </div>
         </div>
@@ -596,26 +596,26 @@
     <div class="col-md-12">
       <div class="row">
         <div class="col-md-3" [style]="{'margin-left':'5px'}">
-          <label htmlFor="username">Font Size</label>
+          <label htmlFor="username" class="label">Font Size</label>
           <p-inputNumber inputId="integeronly" formControlName="Fontsize">
           </p-inputNumber>
         </div>
         <div class="col-md-4" style="margin-left: 50px">
-          <label htmlFor="username">Text Case</label><br />
+          <label htmlFor="username" class="label">Text Case</label><br />
           <p-dropdown [options]="textcaseoption" [style]="{'width':'200px'}"  formControlName="textTransform" placeholder="Select a text case"></p-dropdown>
 
         </div>
         <div class="col-md-3">
-          <label htmlFor="username">Font Weight</label><br />
+          <label htmlFor="username" class="label">Font Weight</label><br />
           <p-dropdown [options]="Fontweightoption" [style]="{'width':'200px'}" formControlName="Fontweight" placeholder="Select a Font weight"></p-dropdown>
         </div>
         <div class="col-md-2" [style]="{'margin-left':'5px'}">
-          <label htmlFor="username">Font Style</label><br />
+          <label htmlFor="username" class="label">Font Style</label><br />
           <p-dropdown [options]="Fontstyleoption" [style]="{'width':'200px'}" formControlName="Fontstyle" placeholder="Select a Font style"></p-dropdown>
 
         </div>
         <div class="col-md-3" [style]="{ 'margin-left': '115px' }">
-          <label htmlFor="username" [style]="{'margin-bottom': '4px'}">Background color</label>
+          <label htmlFor="username" class="label" [style]="{'margin-bottom': '4px'}">Background color</label>
           <!-- <input
             *ngIf="IsRowtext"
             type="text"
@@ -636,7 +636,7 @@
           <p-colorPicker formControlName="RowBackGroundcolour" [ngStyle]="{'margin-left': '15px'}"></p-colorPicker>
         </div>
         <div class="col-md-3" [style]="{ 'margin-left': '70px' }">
-          <label htmlFor="username">Font Color</label><br />
+          <label htmlFor="username" class="label">Font Color</label><br />
           <!-- <input
             *ngIf="IsRowFonttext"
             type="text"

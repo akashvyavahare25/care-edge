@@ -655,17 +655,23 @@ console.log("roen",rowNode)
             if (element.data.id === this.tablerowNode.parent.data.id) {
               element.children.forEach((ele: any) => {
                 if (ele.data.id === this.tablerowNode.data.id) {
+                  if(ele.data.type==='table'){
+                if(ele.data.mergecol.length!==0){
                   if (this.updatedDatanew.length === 0) {
                     ele.data.mergecol.forEach((e1: any) => {
                       this.updatedDatanew.push(e1);
                     });
                   }
+                  }
+                  if(ele.data.mergecolumnrow.length!==0){
                   if (this.updaterowcolspandata.length === 0) {
                     this.tablerowNode.data.mergecolumnrow.forEach((e1: any) => {
                       this.updaterowcolspandata.push(e1);
                     });
                   }
                 }
+                }
+              }
               });
             }
           });
@@ -706,7 +712,7 @@ console.log("roen",rowNode)
               score: this.scoreValue,
               factor: this.factorValue,
               total: this.totalValue,
-              id: this.containerData.children.length + 1,
+              id: this.containerData.children[this.containerData.children.length-1].id? this.containerData.children[this.containerData.children.length-1].id+ 1:1,
               template: null,
               alias: null,
             },

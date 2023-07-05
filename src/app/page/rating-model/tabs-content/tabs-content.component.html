@@ -1,9 +1,9 @@
 <span>
-  <label class="hover-text" (click)="Navigate()">
+  <label  (click)="Navigate()" [style]="{'padding-top':'15px'}">
     <p>&larr;Rating Model</p>
   </label>
 </span>
-<div class="card col-md-12 mt-3" >
+<div class="card col-md-12 " >
   <!-- <p-tabView [(activeIndex)]="activeIndex"  >
       
       
@@ -33,7 +33,7 @@
           >
             <ul *ngIf="child.data.type === 'container'">
               <span *ngIf="child.data.hide === true">
-                <li [ngStyle]="{ border: 'solid', 'border-width': '0.2px' }">
+                <li class="left-position">
                   {{ child.data.name }}
                 </li>
               </span>
@@ -46,7 +46,7 @@
               <ng-template pTemplate="header">
                 <tr>
                 <th
-                  [style]="{ 'text-align':'center','background-color':'white' }"
+                  [style]="{ 'text-align':'center','background-color':'white', 'font-size':'22px' }"
                   [attr.colspan]="child.data.column"
                 >
                   {{ child.data.name }}
@@ -105,7 +105,17 @@
                             column.colType !== 'checkbox' &&
                             column.colType !== 'radio'
                           "
-                          (change)="onchangevalue($event, i, j, row.columns, column, row.columns[0])"
+                          pInputText
+                          (change)="
+                          onchangevalue(
+                            $event,
+                            i,
+                            j,
+                            child.data.data,
+                            column,
+                            child.data.data[0]
+                          )
+                        "
                           [type]="column.colType"
                           [ngStyle]="{
                             'margin-left': '20px',
@@ -119,6 +129,7 @@
                         <ng-container *ngIf="column.colType === 'checkbox' || column.colType === 'radio'">
                           <div *ngFor="let option of column.checkboxvalid">
                             <label>{{ option.Label }}</label>
+                            
                             <input type="radio" *ngIf="column.colType === 'radio'" />
                             <input type="checkbox" *ngIf="column.colType === 'checkbox'" />
                           </div>
@@ -127,60 +138,82 @@
                     </ng-container>
                   </tr>
                 </ng-container>
-            
                 <tr class="rowdata" *ngIf="child.data.total === true">
-                  <td class="datarow" *ngFor="let col of child.data.data[0].columns">
-                    <div *ngIf="col.id === 1">
-                      <label>Total</label>
-                    </div>
-                    <div *ngIf="col.id !== 1">
-                      <input
-                        type="text"
-                        pInputText
-                        *ngIf="col?.columntotal"
-                        [value]="col.columntotal"
-                        [ngStyle]="{ 'margin-left': '10px', 'height': '30px', 'width': '90%' }"
-                        readonly
-                      />
-                    </div>
+                  <td
+                    class="datarow" 
+                    *ngFor="let col of child.data.data[0].columns; let i = index"
+                  >
+                  <div *ngIf="i===0; else elseBlock">
+                    <label [style]="{ 'margin-left': '25px' }">Total</label>
+               </div>
+                  <ng-template #elseBlock>
+                    <input 
+                      type="text"
+                      pInputText
+                      *ngIf="col?.columntotal"
+                      [value]="col.columntotal"
+                      
+                      [ngStyle]="{
+                        'margin-left': '40px',
+                        'width': '80%',
+                     
+                        'border-color': 'lightgray'
+                      }"
+                      readonly
+                    />
+                  </ng-template>
                   </td>
                 </tr>
             
                 <tr class="rowdata" *ngIf="child.data.score === true">
-                  <td class="datarow" *ngFor="let col of child.data.data[0].columns">
-                    <div *ngIf="col.id === 1">
-                      <label>Score</label>
-                    </div>
-                    <div *ngIf="col.id !== 1">
-                      <input
-                        type="text"
-                        pInputText
-                        *ngIf="col?.score"
-                        [value]="col.score"
-                        [ngStyle]="{ 'margin-left': '10px', 'height': '30px', 'width': '90%' }"
-                        readonly
-                      />
-                    </div>
-                  </td>
+                  <td
+                  class="datarow" 
+                  *ngFor="let col of child.data.data[0].columns; let i = index"
+                >
+                <div *ngIf="i===0; else elseBlock">
+                  <label [style]="{ 'margin-left': '25px' }">Score</label>
+             </div>
+                <ng-template #elseBlock>
+                  <input 
+                    type="text"
+                    pInputText
+                    *ngIf="col?.score"
+                    [value]="col.score"
+                    [ngStyle]="{
+                      'margin-left': '40px',
+                      'width': '80%',
+                      'border-color': 'lightgray'
+                    }"
+                    readonly
+                  />
+                </ng-template>
+                </td>
                 </tr>
-            
                 <tr class="rowdata" *ngIf="child.data.factor === true">
-                  <td class="datarow" *ngFor="let col of child.data.data[0].columns">
-                    <div *ngIf="col.id === 1">
-                      <label>Factor</label>
-                    </div>
-                    <div *ngIf="col.id !== 1">
-                      <input
-                        type="text"
-                        pInputText
-                        *ngIf="col?.factor"
-                        [value]="col.factor"
-                        [ngStyle]="{ 'margin-left': '10px', 'height': '30px', 'width': '90%' }"
-                        readonly
-                      />
-                    </div>
-                  </td>
+                  <td
+                  class="datarow" 
+                  *ngFor="let col of child.data.data[0].columns; let i = index"
+                >
+                <div *ngIf="i===0; else elseBlock">
+                  <label [style]="{ 'margin-left': '25px' }">Factor</label>
+             </div>
+                <ng-template #elseBlock>
+                  <input 
+                    type="text"
+                    pInputText
+                    *ngIf="col?.factor"
+                    [value]="col.factor"
+                    [ngStyle]="{
+                      'margin-left': '40px',
+                      'width': '80%',
+                      'border-color': 'lightgray'
+                    }"
+                    readonly
+                  />
+                </ng-template>
+                </td>
                 </tr>
+
               </ng-template>
             </p-table>
           </div>

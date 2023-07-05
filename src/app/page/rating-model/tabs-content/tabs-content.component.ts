@@ -180,6 +180,7 @@ export class TabsContentComponent implements OnInit {
     this.total = 0;
     let k = 0;
     this.colfactor = 0;
+    this.colscore=0
     rowValue.value = parseInt(event.target.value);
     if (
       rowValue.hasOwnProperty('value') &&
